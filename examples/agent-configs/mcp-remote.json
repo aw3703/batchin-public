@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "batchin": {
+      "url": "https://api.batchin.tech/v1/mcp",
+      "headers": {
+        "Authorization": "Bearer BATCHIN_API_KEY"
+      }
+    }
+  }
+}

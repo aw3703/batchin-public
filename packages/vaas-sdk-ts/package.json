@@ -1,0 +1,45 @@
+{
+  "name": "@batchin/vaas",
+  "version": "0.1.0",
+  "private": false,
+  "description": "BatchIn VaaS TypeScript SDK for receipt and evidence verification APIs.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://batchin.tech",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aw3703/core.git",
+    "directory": "packages/vaas-sdk-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/aw3703/core/issues"
+  },
+  "keywords": [
+    "batchin",
+    "vaas",
+    "ai",
+    "inference",
+    "billing",
+    "receipt",
+    "audit"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/client.d.ts",
+      "import": "./src/client.js"
+    }
+  },
+  "types": "./src/client.d.ts",
+  "files": [
+    "src/client.js",
+    "src/client.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node -e \"const fs=require('node:fs');fs.copyFileSync('dist/client.js','src/client.js');fs.copyFileSync('dist/client.d.ts','src/client.d.ts');\"",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

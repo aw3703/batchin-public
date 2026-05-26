@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "batchin": {
+      "command": "python",
+      "args": ["-m", "batchin_mcp.server"],
+      "env": {
+        "BATCHIN_API_KEY": "BATCHIN_API_KEY",
+        "BATCHIN_API_BASE_URL": "https://api.batchin.tech"
+      }
+    }
+  }
+}

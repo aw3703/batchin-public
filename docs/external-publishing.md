@@ -8,6 +8,22 @@ external listing is already live.
 
 ### NPM
 
+- Package: @batchin/sdk
+- Source: packages/sdk-ts
+- Purpose: TypeScript SDK for authenticated BatchIn API workflows.
+- Publish command:
+
+    cd packages/sdk-ts
+    npm publish --access public
+
+- Package: @batchin/cli
+- Source: packages/cli-ts
+- Purpose: CLI for authenticated BatchIn API checks.
+- Publish command:
+
+    cd packages/cli-ts
+    npm publish --access public
+
 - Package: @batchin/vaas
 - Source: packages/vaas-sdk-ts
 - Purpose: TypeScript client for authenticated BatchIn developer workflows.
@@ -17,6 +33,15 @@ external listing is already live.
     npm publish --access public
 
 ### PyPI
+
+- Package: batchin
+- Source: packages/sdk-python
+- Purpose: Python SDK for authenticated BatchIn API workflows.
+- Publish command:
+
+    cd packages/sdk-python
+    python -m build
+    twine upload dist/*
 
 - Package: batchin-vaas
 - Source: packages/vaas-sdk-python
@@ -52,6 +77,8 @@ Submit the public MCP surface with these fields:
 Submit only after the public manifest, package metadata, and workspace
 entitlement wording have been reviewed.
 
+Reviewed registry submission text lives in registry/mcp/listing.md.
+
 ## Agent platform configs
 
 Example configs live in examples/agent-configs. Link that directory from any
@@ -61,6 +88,8 @@ public docs or package README used for registry submission.
 
 Submit official skills only after the public skill copy has been reviewed for
 product-scope leakage.
+
+Reviewed skill draft lives in registry/skills/batchin-skill.md.
 
 ## ChatGPT app
 

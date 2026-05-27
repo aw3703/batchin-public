@@ -19,6 +19,9 @@ BatchIn-controlled public endpoints and authenticated workspaces.
 
 ## Source packages
 
+- packages/sdk-ts
+- packages/cli-ts
+- packages/sdk-python
 - packages/vaas-sdk-ts
 - packages/vaas-sdk-python
 - packages/mcp-server
@@ -30,5 +33,8 @@ verified.
 ## Agent configs
 
 See examples/agent-configs for Cursor, Windsurf, Claude Desktop, and MCP config examples.
+
+Standard config paths are also available at .cursor/rules, .windsurf/rules,
+.claude/commands, and AGENTS.md.
 
 This repository contains public integration resources only. It does not contain BatchIn production secrets or private infrastructure configuration.

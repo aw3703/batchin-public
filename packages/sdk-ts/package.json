@@ -1,0 +1,33 @@
+{
+  "name": "@batchin/sdk",
+  "version": "0.1.0",
+  "private": false,
+  "description": "BatchIn TypeScript SDK for authenticated API workflows.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://batchin.tech",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aw3703/batchin-public.git",
+    "directory": "packages/sdk-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/aw3703/batchin-public/issues"
+  },
+  "keywords": ["batchin", "ai", "sdk", "integration"],
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "types": "./src/index.d.ts",
+  "files": ["src", "README.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

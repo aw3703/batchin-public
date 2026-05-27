@@ -1,0 +1,30 @@
+{
+  "name": "@batchin/cli",
+  "version": "0.1.0",
+  "private": false,
+  "description": "BatchIn CLI for authenticated API checks.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://batchin.tech",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aw3703/batchin-public.git",
+    "directory": "packages/cli-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/aw3703/batchin-public/issues"
+  },
+  "keywords": ["batchin", "ai", "cli", "integration"],
+  "bin": {
+    "batchin": "./src/cli.js"
+  },
+  "files": ["src", "README.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.3"
+  }
+}

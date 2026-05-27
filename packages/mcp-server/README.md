@@ -7,6 +7,13 @@ placeholder payloads.
 
 ## Configuration
 
+This package is source-ready in the public BatchIn repository. Use the source
+checkout until PyPI publication is verified:
+
+    git clone https://github.com/aw3703/batchin-public.git
+    cd batchin-public/packages/mcp-server
+    python -m pip install -e .
+
 Set these environment variables before starting the MCP process:
 
 - BATCHIN_API_KEY: required customer API key used as Authorization: Bearer ...

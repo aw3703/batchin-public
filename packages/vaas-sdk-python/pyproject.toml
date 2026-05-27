@@ -10,9 +10,9 @@ keywords = ["batchin", "vaas", "ai", "inference", "billing", "receipt", "audit"]
 
 [project.urls]
 Homepage = "https://batchin.tech"
-Repository = "https://github.com/aw3703/core"
+Repository = "https://github.com/aw3703/batchin-public"
 Documentation = "https://batchin.tech/agents.md"
-Issues = "https://github.com/aw3703/core/issues"
+Issues = "https://github.com/aw3703/batchin-public/issues"
 
 [project.scripts]
 batchin-vaas-verify = "batchin_vaas.verifier:main"

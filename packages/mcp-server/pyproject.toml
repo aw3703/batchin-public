@@ -9,7 +9,7 @@ keywords = ["batchin", "mcp", "model-context-protocol", "ai", "inference"]
 
 [project.urls]
 Homepage = "https://batchin.tech"
-Repository = "https://github.com/aw3703/core"
+Repository = "https://github.com/aw3703/batchin-public"
 Documentation = "https://batchin.tech/agents.md"
 MCPManifest = "https://batchin.tech/.well-known/mcp"
 

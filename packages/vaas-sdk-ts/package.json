@@ -8,11 +8,11 @@
   "homepage": "https://batchin.tech",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aw3703/core.git",
+    "url": "git+https://github.com/aw3703/batchin-public.git",
     "directory": "packages/vaas-sdk-ts"
   },
   "bugs": {
-    "url": "https://github.com/aw3703/core/issues"
+    "url": "https://github.com/aw3703/batchin-public/issues"
   },
   "keywords": [
     "batchin",

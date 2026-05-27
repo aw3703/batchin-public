@@ -21,6 +21,10 @@ BatchIn is a verification-first AI inference platform with OpenAI-compatible Mod
 - packages/vaas-sdk-python: Python SDK and local bundle verifier for VaaS receipts.
 - packages/mcp-server: Local MCP JSON-RPC server for authenticated BatchIn tools and resources.
 
+These packages are source-ready in this public repository. Registry packages
+are not advertised as installable until their npm or PyPI publication is
+verified.
+
 ## Agent configs
 
 See examples/agent-configs for Cursor, Windsurf, Claude Desktop, and MCP config examples.

@@ -4,7 +4,13 @@ TypeScript SDK for BatchIn VaaS receipt, evidence, bundle, and audit-chain APIs.
 
 ## Install
 
-    npm install @batchin/vaas
+This package is source-ready in the public BatchIn repository. Use the source
+checkout until npm publication is verified:
+
+    git clone https://github.com/aw3703/batchin-public.git
+    cd batchin-public/packages/vaas-sdk-ts
+    npm install
+    npm run build
 
 ## Usage
 

@@ -4,7 +4,12 @@ Python SDK for BatchIn VaaS receipt, evidence, bundle, and audit-chain APIs.
 
 ## Install
 
-    pip install batchin-vaas
+This package is source-ready in the public BatchIn repository. Use the source
+checkout until PyPI publication is verified:
+
+    git clone https://github.com/aw3703/batchin-public.git
+    cd batchin-public/packages/vaas-sdk-python
+    python -m pip install -e .
 
 ## Usage
 

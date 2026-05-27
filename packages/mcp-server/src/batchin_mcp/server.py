@@ -64,13 +64,13 @@ RESOURCES = [
     {
         "uri": "batchin://docs/agents",
         "name": "BatchIn agent guide",
-        "description": "Agent-facing BatchIn product boundaries, API entry points, billing posture, and MCP usage notes.",
+        "description": "Reviewed public guidance for authenticated BatchIn agent integrations.",
         "mimeType": "text/markdown",
     },
     {
         "uri": "batchin://docs/pricing",
-        "name": "BatchIn pricing and billing guide",
-        "description": "Machine-readable summary of token, media, VaaS, capacity, and workspace billing surfaces.",
+        "name": "BatchIn workspace guide",
+        "description": "Reviewed public guidance for account-scoped BatchIn workspace behavior.",
         "mimeType": "text/markdown",
     },
     {
@@ -81,8 +81,8 @@ RESOURCES = [
     },
     {
         "uri": "batchin://catalog/models",
-        "name": "BatchIn model catalog",
-        "description": "Model catalog discovery pointer for customer-callable models and route status.",
+        "name": "BatchIn catalog pointer",
+        "description": "Discovery pointer for account-scoped catalog state.",
         "mimeType": "application/json",
     },
 ]
@@ -146,10 +146,9 @@ def _resource_contents(uri: str) -> dict[str, Any]:
             "mimeType": "text/markdown",
             "text": (
                 "# BatchIn agent guide\n\n"
-                "BatchIn exposes an OpenAI-compatible Model API, Media API, Spend Control, VaaS Ledger, "
-                "Dedicated Capacity, and Agent Accounts / Workloads / Payments. Start from MCP, agents.md, "
-                "llms.txt, the OpenAPI spec, and the API catalog. Customer-callable operations require API-key "
-                "authentication and workspace entitlement checks."
+                "Start from the reviewed public discovery files, MCP manifest, agents.md, llms.txt, "
+                "OpenAPI spec, and API catalog. Customer-callable operations require API-key authentication "
+                "and workspace entitlement checks."
             ),
         }
     if uri == "batchin://docs/pricing":
@@ -157,10 +156,9 @@ def _resource_contents(uri: str) -> dict[str, Any]:
             "uri": uri,
             "mimeType": "text/markdown",
             "text": (
-                "# BatchIn pricing and billing guide\n\n"
-                "BatchIn bills model requests by token, media tasks by task or media unit, VaaS by receipt "
-                "and retention features, and dedicated capacity by reserved throughput, endpoint, GPU-hour, "
-                "or managed deployment terms."
+                "# BatchIn workspace guide\n\n"
+                "Workspace-specific pricing and availability are account-scoped. Use reviewed public docs "
+                "and authenticated workspace readiness before presenting any capability as enabled."
             ),
         }
     if uri == "batchin://openapi":

@@ -1,6 +1,6 @@
 # @batchin/vaas
 
-TypeScript SDK for BatchIn VaaS receipt, evidence, bundle, and audit-chain APIs.
+TypeScript integration client for authenticated BatchIn developer workflows.
 
 ## Install
 
@@ -21,9 +21,5 @@ checkout until npm publication is verified:
       apiKey: process.env.BATCHIN_API_KEY,
     });
 
-    const receipt = await vaas.getReceipt("request_or_record_id");
-    const evidence = await vaas.getEvidence("request_or_record_id");
-    const result = await vaas.verifyBundle({ receipt, evidence });
-    console.log(result);
-
-The SDK performs real BatchIn API calls. It does not create synthetic receipts.
+The SDK performs real BatchIn API calls. Customer operations require API-key
+authentication and workspace entitlement checks.

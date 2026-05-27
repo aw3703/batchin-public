@@ -1,9 +1,9 @@
 # BatchIn MCP Server
 
-MCP JSON-RPC server for exposing authenticated BatchIn backend tools.
+MCP JSON-RPC connector for authenticated BatchIn developer workflows.
 
-The server performs real BatchIn API calls. It does not return mock results or
-placeholder payloads.
+The server performs real BatchIn API calls. Customer operations require API-key
+authentication and workspace entitlement checks.
 
 ## Configuration
 
@@ -22,20 +22,14 @@ Set these environment variables before starting the MCP process:
 
 ## Tools
 
-- chat_completion: POST /v1/chat/completions
-- batch_submit: POST /v1/batches
-- usage_query: GET /v1/usage/{summary|logs|meter-events|cost-breakdown|by-api-key}
-- quote: POST /v1/quote
-
-Each tool includes MCP behavioral annotations for read-only, idempotency,
-destructive, and open-world hints.
+The tool surface follows the authenticated BatchIn API and the caller's
+workspace entitlements. Each tool includes MCP behavioral annotations for
+read-only, idempotency, destructive, and open-world hints.
 
 ## Resources
 
 - batchin://docs/agents
-- batchin://docs/pricing
 - batchin://openapi
-- batchin://catalog/models
 
 ## Claude Desktop
 

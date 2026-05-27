@@ -1,11 +1,11 @@
 [project]
 name = "batchin-mcp-server"
 version = "0.1.0"
-description = "BatchIn MCP server"
+description = "BatchIn MCP connector for authenticated developer workflows"
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
-keywords = ["batchin", "mcp", "model-context-protocol", "ai", "inference"]
+keywords = ["batchin", "mcp", "model-context-protocol", "ai", "integration"]
 
 [project.urls]
 Homepage = "https://batchin.tech"

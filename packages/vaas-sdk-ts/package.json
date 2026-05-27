@@ -2,7 +2,7 @@
   "name": "@batchin/vaas",
   "version": "0.1.0",
   "private": false,
-  "description": "BatchIn VaaS TypeScript SDK for receipt and evidence verification APIs.",
+  "description": "BatchIn TypeScript integration client for authenticated developer workflows.",
   "license": "Apache-2.0",
   "type": "module",
   "homepage": "https://batchin.tech",
@@ -16,12 +16,9 @@
   },
   "keywords": [
     "batchin",
-    "vaas",
     "ai",
-    "inference",
-    "billing",
-    "receipt",
-    "audit"
+    "integration",
+    "sdk"
   ],
   "exports": {
     ".": {

@@ -1,7 +1,8 @@
 # BatchIn external publishing checklist
 
-This file tracks public surfaces that improve agent and search discoverability.
-It is a release checklist, not a claim that the external listing is already live.
+This file tracks publication mechanics for public developer resources. It is a
+release checklist, not a product capability list and not a claim that any
+external listing is already live.
 
 ## Package registries
 
@@ -9,7 +10,7 @@ It is a release checklist, not a claim that the external listing is already live
 
 - Package: @batchin/vaas
 - Source: packages/vaas-sdk-ts
-- Purpose: TypeScript SDK for VaaS receipt and evidence APIs.
+- Purpose: TypeScript client for authenticated BatchIn developer workflows.
 - Publish command:
 
     cd packages/vaas-sdk-ts
@@ -19,7 +20,7 @@ It is a release checklist, not a claim that the external listing is already live
 
 - Package: batchin-vaas
 - Source: packages/vaas-sdk-python
-- Purpose: Python SDK and local bundle verifier for VaaS receipts.
+- Purpose: Python client for authenticated BatchIn developer workflows.
 - Publish command:
 
     cd packages/vaas-sdk-python
@@ -28,7 +29,7 @@ It is a release checklist, not a claim that the external listing is already live
 
 - Package: batchin-mcp-server
 - Source: packages/mcp-server
-- Purpose: Local MCP JSON-RPC server for authenticated BatchIn tools.
+- Purpose: Local MCP JSON-RPC connector for authenticated BatchIn workflows.
 - Publish command:
 
     cd packages/mcp-server
@@ -48,12 +49,8 @@ Submit the public MCP surface with these fields:
 - Docs: https://batchin.tech/agents.md
 - OpenAPI: https://api.batchin.tech/openapi.json
 
-Targets:
-
-- Smithery
-- mcp.so
-- Glama
-- PulseMCP
+Submit only after the public manifest, package metadata, and workspace
+entitlement wording have been reviewed.
 
 ## Agent platform configs
 
@@ -62,14 +59,11 @@ public docs or package README used for registry submission.
 
 ## Skills registry
 
-Submit an official skill using the content from:
-
-- https://batchin.tech/.well-known/agent-skills/routing-and-billing.md
-- https://batchin.tech/.well-known/agent-skills/vaas-and-enterprise-evidence.md
+Submit official skills only after the public skill copy has been reviewed for
+product-scope leakage.
 
 ## ChatGPT app
 
-Do not publish a marketing-only GPT. The app should answer from the public
-docs, OpenAPI, model catalog, VaaS receipt docs, and pricing markdown, and it
-should avoid claiming account-scoped capabilities are enabled before workspace
-readiness confirms them.
+Do not publish a marketing-only GPT. The app should answer only from reviewed
+public docs and must avoid claiming account-scoped capabilities are enabled
+before workspace readiness confirms them.

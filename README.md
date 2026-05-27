@@ -1,8 +1,10 @@
 # BatchIn Developer Resources
 
-Public SDK, MCP, and agent configuration resources for BatchIn.
+Public integration resources for authenticated BatchIn developer workflows.
 
-BatchIn is a verification-first AI inference platform with OpenAI-compatible Model API, Media API, Spend Control, VaaS receipts, Dedicated Capacity, and Agent Workloads.
+This repository intentionally keeps public GitHub copy narrow. Product
+capability details, availability, and account-scoped operations are served from
+BatchIn-controlled public endpoints and authenticated workspaces.
 
 ## Public discovery
 
@@ -15,11 +17,11 @@ BatchIn is a verification-first AI inference platform with OpenAI-compatible Mod
 - llms.txt: https://batchin.tech/llms.txt
 - SDK package manifest: https://batchin.tech/.well-known/sdk-packages.json
 
-## Packages
+## Source packages
 
-- packages/vaas-sdk-ts: TypeScript SDK for VaaS receipt and evidence APIs.
-- packages/vaas-sdk-python: Python SDK and local bundle verifier for VaaS receipts.
-- packages/mcp-server: Local MCP JSON-RPC server for authenticated BatchIn tools and resources.
+- packages/vaas-sdk-ts
+- packages/vaas-sdk-python
+- packages/mcp-server
 
 These packages are source-ready in this public repository. Registry packages
 are not advertised as installable until their npm or PyPI publication is

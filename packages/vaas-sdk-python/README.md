@@ -1,6 +1,6 @@
 # batchin-vaas
 
-Python SDK for BatchIn VaaS receipt, evidence, bundle, and audit-chain APIs.
+Python integration client for authenticated BatchIn developer workflows.
 
 ## Install
 
@@ -20,10 +20,5 @@ checkout until PyPI publication is verified:
         api_key="BATCHIN_API_KEY",
     )
 
-    receipt = client.get_receipt("request_or_record_id")
-    evidence = client.get_evidence("request_or_record_id")
-    print(client.verify_bundle(receipt=receipt, evidence=evidence))
-
-The CLI verifies local JSON bundles:
-
-    batchin-vaas-verify --receipt receipt.json --evidence evidence.json
+Customer operations require API-key authentication and workspace entitlement
+checks.

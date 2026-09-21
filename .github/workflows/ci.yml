@@ -39,7 +39,7 @@ jobs:
       - name: Build all workspace packages
         run: npm run build
       - name: Run workspace tests
-        run: npm run test
+        run: npm run test:ts
 
   python-packages:
     name: Python Packages Packaging & Validation

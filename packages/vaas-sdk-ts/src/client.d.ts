@@ -21,4 +21,23 @@ export declare class VaasClient {
     }): Promise<unknown>;
     getChain(): Promise<unknown>;
     getPubkeyCurrent(): Promise<unknown>;
+    getAnchorReadiness(): Promise<unknown>;
+    anchorBase(recordId: string): Promise<unknown>;
+    anchorSolana(recordId: string): Promise<unknown>;
+    requestTestnetAnchor(chain: "base" | "solana", network: "base-sepolia" | "solana-devnet", payload: {
+        receipt_hash?: string;
+        merkle_root?: string;
+    }): Promise<unknown>;
+    verifyMerkleProofOnServer(payload: {
+        leaf_hash: string;
+        proof: string[];
+        root: string;
+    }): Promise<unknown>;
 }
+/**
+ * Client-side Merkle inclusion proof verification helper.
+ */
+export declare function verifyMerkleProof(leafHash: string, proof: Array<{
+    position: "left" | "right";
+    hash: string;
+} | string>, expectedRoot: string, hashFn?: (combined: string) => string): boolean;

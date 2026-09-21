@@ -1,0 +1,37 @@
+name: Feature Request
+description: Suggest an idea or new feature for BatchIn developer tools
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We appreciate feedback and ideas from the developer community!
+  - type: dropdown
+    id: package
+    attributes:
+      label: Target Component
+      options:
+        - "@batchin/sdk (packages/sdk-ts)"
+        - "batchin (packages/sdk-python)"
+        - "@batchin/cli (packages/cli-ts)"
+        - "batchin-mcp-server (packages/mcp-server)"
+        - "@batchin/vaas (packages/vaas-sdk-ts)"
+        - "batchin-vaas (packages/vaas-sdk-python)"
+        - "@batchin/contracts (packages/contracts)"
+        - "Agent Rules / MCP Integrations"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Use Case
+      description: What problem would this feature solve for your workflow?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe the API, CLI command, or behavior you would like to see.
+    validations:
+      required: true

@@ -1,3 +1,10 @@
-from .client import BatchInClient
+from batchin.client import AsyncBatchIn, AuthenticationError, BatchIn, BatchInClient, BatchInError, RateLimitError
 
-__all__ = ["BatchInClient"]
+__all__ = [
+    "BatchIn",
+    "AsyncBatchIn",
+    "BatchInClient",
+    "BatchInError",
+    "AuthenticationError",
+    "RateLimitError",
+]

@@ -1,26 +1,66 @@
 # @batchin/sdk
 
-TypeScript SDK for authenticated BatchIn API workflows.
+Official TypeScript SDK for the **BatchIn AI Inference Control Plane**.
 
-## Install
+Provides an OpenAI-compatible interface, high-performance SSE streaming, usage querying, and cryptographic VaaS receipt integration.
 
-This package is source-ready. Registry publication must be verified before
-installing by package name.
+---
 
-    git clone https://github.com/aw3703/batchin-public.git
-    cd batchin-public/packages/sdk-ts
-    npm install
-    npm run build
+## Installation
+
+```bash
+npm install @batchin/sdk
+```
+
+---
 
 ## Quickstart
 
-    import { BatchInClient } from "@batchin/sdk";
+### 1. OpenAI-Compatible Chat Completions
 
-    const client = new BatchInClient({
-      apiKey: process.env.BATCHIN_API_KEY,
-    });
+```typescript
+import { BatchIn } from "@batchin/sdk";
 
-    const models = await client.models();
+const client = new BatchIn({
+  apiKey: process.env.BATCHIN_API_KEY,
+});
 
-Customer operations require API-key authentication and workspace entitlement
-checks.
+const completion = await client.chat.completions.create({
+  model: "deepseek-v4-pro",
+  messages: [
+    { role: "system", content: "You are an elite software architect." },
+    { role: "user", content: "Explain how VaaS provides zero-trust AI auditability." },
+  ],
+  temperature: 0.7,
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+### 2. Real-Time Streaming with Async Iterables
+
+```typescript
+const stream = await client.chat.completions.create({
+  model: "deepseek-v4-flash",
+  messages: [{ role: "user", content: "Write a haiku about cryptography." }],
+  stream: true,
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content || "";
+  process.stdout.write(content);
+}
+console.log();
+```
+
+### 3. Model Catalog & VaaS Evidence
+
+```typescript
+// Query available models
+const models = await client.models.list();
+console.log("Available models:", models.data.map(m => m.id));
+
+// Retrieve cryptographic VaaS receipt
+const receipt = await client.vaas.getReceipt("rec_98bf12");
+console.log("Inference receipt:", receipt);
+```

@@ -1,25 +1,80 @@
 # @batchin/vaas
 
-TypeScript integration client for authenticated BatchIn developer workflows.
+Official TypeScript SDK and standalone CLI verifier for **BatchIn VaaS (Verifiable AI as a Service)**.
 
-## Install
+Provides cryptographic verification of AI inference receipts, input/output SHA-256 hashes, Ed25519 signature validation, Merkle inclusion proofs, and Base L2 settlement anchors.
 
-This package is source-ready in the public BatchIn repository. Use the source
-checkout until npm publication is verified:
+---
 
-    git clone https://github.com/aw3703/batchin-public.git
-    cd batchin-public/packages/vaas-sdk-ts
-    npm install
-    npm run build
+## Installation
+
+```bash
+npm install @batchin/vaas
+```
+
+Or run the CLI verifier directly via `npx`:
+
+```bash
+npx @batchin/vaas verify <record_id>
+```
+
+---
 
 ## Usage
 
-    import { VaasClient } from "@batchin/vaas";
+### 1. Cryptographic Receipt Verification
 
-    const vaas = new VaasClient({
-      baseUrl: "https://api.batchin.tech",
-      apiKey: process.env.BATCHIN_API_KEY,
-    });
+```typescript
+import { BatchInVaaSClient, verifyMerkleProof } from "@batchin/vaas";
 
-The SDK performs real BatchIn API calls. Customer operations require API-key
-authentication and workspace entitlement checks.
+const vaas = new BatchInVaaSClient({
+  baseUrl: "https://api.batchin.tech",
+  apiKey: process.env.BATCHIN_API_KEY,
+});
+
+// Fetch and verify cryptographic bundle
+const recordId = "rec_98bf12";
+const receipt = await vaas.getReceipt(recordId);
+const evidence = await vaas.getEvidence(recordId);
+
+const result = await vaas.verifyBundle({ receipt, evidence });
+console.log("Bundle verification status:", result);
+```
+
+### 2. Base L2 & Solana Settlement Anchors
+
+```typescript
+// Query anchor readiness
+const readiness = await vaas.getAnchorReadiness();
+console.log("Anchor readiness:", readiness);
+
+// Request on-chain anchor on Base Sepolia
+const baseAnchor = await vaas.anchorBase(recordId);
+console.log("Base L2 anchor:", baseAnchor);
+```
+
+### 3. Client-Side Merkle Inclusion Proof
+
+```typescript
+import { verifyMerkleProof } from "@batchin/vaas";
+
+const isValid = verifyMerkleProof(
+  "0xleaf_hash...",
+  [{ position: "left", hash: "0xsibling_hash..." }],
+  "0xexpected_root..."
+);
+
+console.log("Merkle proof valid:", isValid);
+```
+
+---
+
+## Standalone CLI Verifier
+
+```bash
+# Human-readable visual verification
+npx @batchin/vaas verify rec_98bf12
+
+# Raw JSON output for automated CI pipelines
+npx @batchin/vaas verify rec_98bf12 --json
+```

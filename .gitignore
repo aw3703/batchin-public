@@ -1,8 +1,37 @@
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# Build artifacts
 dist/
 build/
+*.egg-info/
 __pycache__/
 *.pyc
-*.egg-info/
+*.pyo
+*.pyd
+
+# Environment and secrets
 .env
 .env.*
+!.env.example
+
+# IDE & OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage/
+
+# Temporary
+.tmp/
+tmp/
+*.log

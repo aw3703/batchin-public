@@ -59,18 +59,73 @@ TOOLS = [
             "openWorldHint": True,
         },
     },
+    {
+        "name": "vaas_verify_receipt",
+        "description": "Verify cryptographic VaaS receipt and Ed25519 signature proof for an inference or batch task.",
+        "annotations": {
+            "title": "Verify VaaS Receipt",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    },
+    {
+        "name": "vaas_get_receipt",
+        "description": "Fetch cryptographic VaaS receipt bundle, input/output hash, and Merkle proof by record ID.",
+        "annotations": {
+            "title": "Get VaaS Evidence Bundle",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    },
+    {
+        "name": "batchin_query_pricing",
+        "description": "Query real-time token, batch, and multimodal pricing rates across all available models.",
+        "annotations": {
+            "title": "Query Model Pricing",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    },
+    {
+        "name": "batchin_agent_trace_run",
+        "description": "Trace and correlate multi-step autonomous agent runs with run_id, step_id, tool calls, and cumulative VaaS spend.",
+        "annotations": {
+            "title": "Trace Agent Run",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    },
+    {
+        "name": "batchin_model_fallback",
+        "description": "Query intelligent fallback model hierarchy based on required reasoning tier, max latency, and context length.",
+        "annotations": {
+            "title": "Get Model Fallback Hierarchy",
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": False,
+        },
+    },
 ]
 RESOURCES = [
     {
         "uri": "batchin://docs/agents",
         "name": "BatchIn agent guide",
-        "description": "Reviewed public guidance for authenticated BatchIn agent integrations.",
+        "description": "Agent-facing BatchIn product boundaries, API entry points, billing posture, and MCP usage notes.",
         "mimeType": "text/markdown",
     },
     {
         "uri": "batchin://docs/pricing",
-        "name": "BatchIn workspace guide",
-        "description": "Reviewed public guidance for account-scoped BatchIn workspace behavior.",
+        "name": "BatchIn pricing and billing guide",
+        "description": "Machine-readable summary of token, media, VaaS, capacity, and workspace billing surfaces.",
         "mimeType": "text/markdown",
     },
     {
@@ -81,8 +136,8 @@ RESOURCES = [
     },
     {
         "uri": "batchin://catalog/models",
-        "name": "BatchIn catalog pointer",
-        "description": "Discovery pointer for account-scoped catalog state.",
+        "name": "BatchIn model catalog",
+        "description": "Model catalog discovery pointer for customer-callable models and route status.",
         "mimeType": "application/json",
     },
 ]
@@ -146,9 +201,10 @@ def _resource_contents(uri: str) -> dict[str, Any]:
             "mimeType": "text/markdown",
             "text": (
                 "# BatchIn agent guide\n\n"
-                "Start from the reviewed public discovery files, MCP manifest, agents.md, llms.txt, "
-                "OpenAPI spec, and API catalog. Customer-callable operations require API-key authentication "
-                "and workspace entitlement checks."
+                "BatchIn exposes an OpenAI-compatible Model API, Video API, Spend & Billing, VaaS, "
+                "Dedicated Capacity, and Agent Accounts / Workloads / Payments. Start from MCP, agents.md, "
+                "llms.txt, the OpenAPI spec, and the API catalog. Customer-callable operations require API-key "
+                "authentication and workspace entitlement checks."
             ),
         }
     if uri == "batchin://docs/pricing":
@@ -156,9 +212,10 @@ def _resource_contents(uri: str) -> dict[str, Any]:
             "uri": uri,
             "mimeType": "text/markdown",
             "text": (
-                "# BatchIn workspace guide\n\n"
-                "Workspace-specific pricing and availability are account-scoped. Use reviewed public docs "
-                "and authenticated workspace readiness before presenting any capability as enabled."
+                "# BatchIn pricing and billing guide\n\n"
+                "BatchIn bills model requests by token, Video API tasks by task or media unit, VaaS by receipt "
+                "and retention features, and dedicated capacity by reserved throughput, endpoint, compute-hour, "
+                "or managed deployment terms."
             ),
         }
     if uri == "batchin://openapi":
@@ -266,6 +323,47 @@ def _handle_tool_call(name: str, arguments: Mapping[str, Any]) -> dict[str, Any]
             payload["estimated_input_tokens"] = _required(arguments, "estimated_input_tokens")
             payload["estimated_output_tokens"] = _required(arguments, "estimated_output_tokens")
             return _json_tool_result(_request_json("POST", "/v1/quote", body=payload))
+        except Exception as exc:
+            return _tool_error(exc)
+    if name == "vaas_verify_receipt":
+        try:
+            record_id = _required(arguments, "record_id")
+            return _json_tool_result(_request_json("GET", f"/v1/vaas/verify/{record_id}"))
+        except Exception as exc:
+            return _tool_error(exc)
+    if name == "vaas_get_receipt":
+        try:
+            record_id = _required(arguments, "record_id")
+            return _json_tool_result(_request_json("GET", f"/v1/vaas/{record_id}/bundle"))
+        except Exception as exc:
+            return _tool_error(exc)
+    if name == "batchin_query_pricing":
+        try:
+            return _json_tool_result(_request_json("GET", "/v1/models"))
+        except Exception as exc:
+            return _tool_error(exc)
+    if name == "batchin_agent_trace_run":
+        try:
+            query = {key: value for key, value in arguments.items() if value is not None}
+            return _json_tool_result(_request_json("GET", "/v1/usage/logs", query=query))
+        except Exception as exc:
+            return _tool_error(exc)
+    if name == "batchin_model_fallback":
+        try:
+            models_data = _request_json("GET", "/v1/models")
+            reasoning_tier = str(arguments.get("tier") or "high").lower()
+            fallbacks = {
+                "high": ["deepseek-v4-pro", "qwen3.8-max", "kimi-k3"],
+                "mid": ["deepseek-v4.1-flash", "glm-5.3", "minimax-m3"],
+                "low": ["deepseek-v4-flash", "glm-5.3-flash", "kimi-k2.7-code"],
+            }
+            chain = fallbacks.get(reasoning_tier, fallbacks["mid"])
+            available = [m.get("id") for m in models_data.get("data", [])] if isinstance(models_data, dict) else []
+            return _json_tool_result({
+                "tier": reasoning_tier,
+                "fallback_chain": chain,
+                "available_models": available,
+            })
         except Exception as exc:
             return _tool_error(exc)
     raise KeyError(name)

@@ -1,0 +1,20 @@
+name: Compliance & Export Control Guard
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  compliance-audit:
+    name: US Export Control & Zero-Hardware Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify zero-hardware references and sanctions compliance
+        run: python3 scripts/scan_compliance.py

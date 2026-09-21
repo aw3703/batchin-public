@@ -1,8 +1,8 @@
 # Windsurf rules for BatchIn
 
-Use BatchIn through reviewed public discovery and authenticated workspace
-checks. Confirm live API state before marking any account-scoped capability
-available.
+Use BatchIn as a production inference API and VaaS evidence layer, not as a
+generic mock gateway. Confirm live route, pricing, usage, billing, and receipt
+state before marking a capability available.
 
 Primary references:
 

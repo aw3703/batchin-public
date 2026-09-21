@@ -1,40 +1,171 @@
-# BatchIn Developer Resources
+# BatchIn Developer Resources & SDKs
 
-Public integration resources for authenticated BatchIn developer workflows.
+<p align="center">
+  <strong>The Verification-First AI Inference & Autonomous Agent Control Plane</strong>
+</p>
 
-This repository intentionally keeps public GitHub copy narrow. Product
-capability details, availability, and account-scoped operations are served from
-BatchIn-controlled public endpoints and authenticated workspaces.
+<p align="center">
+  <a href="https://github.com/aw3703/batchin-public/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/aw3703/batchin-public/ci.yml?branch=main&label=CI%20Gate&style=flat-square" alt="CI Status" /></a>
+  <a href="https://github.com/aw3703/batchin-public/actions/workflows/compliance.yml"><img src="https://img.shields.io/badge/compliance-US%20Export%20%26%20OFAC%20Pass-brightgreen?style=flat-square" alt="Compliance Status" /></a>
+  <a href="https://www.npmjs.com/package/@batchin/sdk"><img src="https://img.shields.io/npm/v/@batchin/sdk?style=flat-square&color=blue&label=npm%20%40batchin%2Fsdk" alt="npm package" /></a>
+  <a href="https://pypi.org/project/batchin/"><img src="https://img.shields.io/pypi/v/batchin?style=flat-square&color=blue&label=pypi%20batchin" alt="PyPI package" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square" alt="License" /></a>
+  <a href="https://batchin.tech/.well-known/mcp"><img src="https://img.shields.io/badge/MCP-Standard%202026-purple?style=flat-square" alt="MCP Manifest" /></a>
+</p>
 
-## Public discovery
+---
 
-- Website: https://batchin.tech
-- API base: https://api.batchin.tech/v1
-- OpenAPI: https://api.batchin.tech/openapi.json
-- MCP manifest: https://batchin.tech/.well-known/mcp
-- MCP endpoint: https://api.batchin.tech/v1/mcp
-- Agent guide: https://batchin.tech/agents.md
-- llms.txt: https://batchin.tech/llms.txt
-- SDK package manifest: https://batchin.tech/.well-known/sdk-packages.json
+## Overview
 
-## Source packages
+**BatchIn** is an enterprise-grade AI inference routing and verification platform. It provides OpenAI-compatible model endpoints, high-availability multi-provider fallback, cryptographic audit receipts via **VaaS (Verifiable AI as a Service)**, and multi-step agent execution tracing.
 
-- packages/sdk-ts
-- packages/cli-ts
-- packages/sdk-python
-- packages/vaas-sdk-ts
-- packages/vaas-sdk-python
-- packages/mcp-server
+This repository hosts official open-source developer SDKs, CLI utilities, Model Context Protocol (MCP) servers, smart contracts, and agent templates.
 
-These packages are source-ready in this public repository. Registry packages
-are not advertised as installable until their npm or PyPI publication is
-verified.
+```
+                  ┌──────────────────────────────────────────────┐
+                  │    Autonomous Agents, IDEs & Applications    │
+                  │   (Cursor, Windsurf, Claude Desktop, SDKs)   │
+                  └──────────────────────┬───────────────────────┘
+                                         │
+                         OpenAI API / MCP JSON-RPC / CLI
+                                         │
+                  ┌──────────────────────▼───────────────────────┐
+                  │          BatchIn Inference Control Plane     │
+                  │   - Intelligent Route & Fallback Matrix      │
+                  │   - Dedicated Capacity (TPS Allocations)     │
+                  │   - Ephemeral Zero Data Retention (ZDR)      │
+                  └──────────────────────┬───────────────────────┘
+                                         │
+                             Cryptographic Attestation
+                                         │
+                  ┌──────────────────────▼───────────────────────┐
+                  │          VaaS (Verifiable AI as a Service)   │
+                  │   - Ed25519 Signatures (RFC 8032)            │
+                  │   - SHA-256 Merkle Inclusion Proofs          │
+                  │   - Base L2 Rollup Registry & Solana Anchors │
+                  └──────────────────────────────────────────────┘
+```
 
-## Agent configs
+---
 
-See examples/agent-configs for Cursor, Windsurf, Claude Desktop, and MCP config examples.
+## Workspace Packages
 
-Standard config paths are also available at .cursor/rules, .windsurf/rules,
-.claude/commands, and AGENTS.md.
+| Package | Ecosystem | Description | Directory |
+| :--- | :--- | :--- | :--- |
+| **`@batchin/sdk`** | npm | Modern TypeScript SDK with OpenAI drop-in compatibility & streaming | [`packages/sdk-ts`](packages/sdk-ts) |
+| **`batchin`** | PyPI | Official Python SDK with Sync, Async, and streaming support | [`packages/sdk-python`](packages/sdk-python) |
+| **`@batchin/cli`** | npm | Developer CLI for model discovery, prompt testing, and VaaS audits | [`packages/cli-ts`](packages/cli-ts) |
+| **`batchin-mcp-server`** | PyPI | Model Context Protocol server exposing 8 production agent tools | [`packages/mcp-server`](packages/mcp-server) |
+| **`@batchin/vaas`** | npm | VaaS TypeScript cryptographic receipt verifier and Base L2 anchor | [`packages/vaas-sdk-ts`](packages/vaas-sdk-ts) |
+| **`batchin-vaas`** | PyPI | VaaS Python SDK and offline cryptographic bundle verifier | [`packages/vaas-sdk-python`](packages/vaas-sdk-python) |
+| **`@batchin/contracts`** | npm / Sol | Solidity smart contracts for Base Sepolia on-chain registry | [`packages/contracts`](packages/contracts) |
 
-This repository contains public integration resources only. It does not contain BatchIn production secrets or private infrastructure configuration.
+---
+
+## Quickstart
+
+### 1. TypeScript SDK
+
+```typescript
+import { BatchIn } from "@batchin/sdk";
+
+const client = new BatchIn({
+  apiKey: process.env.BATCHIN_API_KEY,
+});
+
+// OpenAI-compatible chat completion
+const completion = await client.chat.completions.create({
+  model: "deepseek-v4-pro",
+  messages: [{ role: "user", content: "Explain Merkle trees in two sentences." }],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+### 2. Python SDK
+
+```python
+from batchin import BatchIn
+
+client = BatchIn(api_key="your-batchin-api-key")
+
+response = client.chat.completions.create(
+    model="qwen3.8-max",
+    messages=[{"role": "user", "content": "Hello BatchIn!"}],
+)
+
+print(response["choices"][0]["message"]["content"])
+```
+
+### 3. Developer CLI
+
+```bash
+# List available models
+npx @batchin/cli models
+
+# Run an interactive prompt check
+npx @batchin/cli chat "Explain zero data retention" --model deepseek-v4-flash
+
+# Cryptographically verify a VaaS inference receipt
+npx @batchin/cli verify rec_98bf12
+```
+
+### 4. Model Context Protocol (MCP)
+
+Add BatchIn to Claude Desktop (`claude_desktop_config.json`) or Cursor (`.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "batchin": {
+      "command": "python3",
+      "args": ["-m", "batchin_mcp.server"],
+      "env": {
+        "BATCHIN_API_KEY": "your-batchin-api-key"
+      }
+    }
+  }
+}
+```
+
+Exposes 8 tools including `chat_completion`, `batch_submit`, `vaas_verify_receipt`, `batchin_query_pricing`, `batchin_agent_trace_run`, and `batchin_model_fallback`.
+
+---
+
+## Supported Domestic Golden Models (2026-06+)
+
+BatchIn routes production workloads across the latest domestic flagship models:
+
+- **DeepSeek**: `deepseek-v4-pro` (1.8T MoE Deep Reasoning), `deepseek-v4-flash`, `deepseek-v4.1-flash`
+- **Qwen (Alibaba)**: `qwen3.8-max` (2.4T Super MoE, 1M Context), `qwen-image-3.0-pro`
+- **Hunyuan (Tencent)**: `hy4-preview` (Next-gen Enterprise MoE)
+- **GLM (Zhipu AI)**: `glm-5.3` (Full-modal Agent Reasoning), `glm-5.3-flash`
+- **Kimi (Moonshot)**: `kimi-k3` (Recursive Deep Think), `kimi-k2.7-code`
+- **MiniMax**: `minimax-m3` (Linear-Attention Multimodal), `minimax-h3` (Video)
+- **Video & Vision**: `wan3.0-video`, `doubao-seedance-2.0`, `kling-v3`
+
+---
+
+## Compliance & Export Control Policy
+
+1. **Software Control Plane**: BatchIn is strictly an application- and protocol-layer software API routing and verification control plane. It does not sell, lease, or export physical compute hardware.
+2. **Dedicated Capacity**: Compute allocations are provisioned as software quotas (`Dedicated Capacity`, `Reserved Throughput`, `Tokens Per Second`).
+3. **Export Compliance**: All operations, data retention policies, and cryptographic anchors fully comply with international export controls, EAR regulations, and OFAC sanctions.
+
+---
+
+## Public Discovery Endpoints
+
+- **Official Website**: https://batchin.tech
+- **API Root**: https://api.batchin.tech/v1
+- **OpenAPI 3.1 Contract**: https://api.batchin.tech/openapi.json
+- **MCP Manifest**: https://batchin.tech/.well-known/mcp
+- **Agent Guide**: https://batchin.tech/agents.md
+- **LLM Context**: https://batchin.tech/llms.txt
+- **SDK Manifest**: https://batchin.tech/.well-known/sdk-packages.json
+
+---
+
+## License
+
+This project is licensed under the [Apache License, Version 2.0](LICENSE).

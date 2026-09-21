@@ -1,0 +1,30 @@
+{
+  "name": "@batchin/contracts",
+  "version": "1.0.0",
+  "description": "BatchIn VaaS On-Chain Verifier & Registry Smart Contracts",
+  "main": "src/BatchInVaaSRegistry.sol",
+  "homepage": "https://batchin.tech",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aw3703/batchin-public.git",
+    "directory": "packages/contracts"
+  },
+  "bugs": {
+    "url": "https://github.com/aw3703/batchin-public/issues"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "vaas",
+    "verifiable-ai",
+    "erc8004",
+    "merkle-proof",
+    "inference-receipts",
+    "base",
+    "ethereum",
+    "smart-contracts"
+  ],
+  "files": [
+    "src/*.sol",
+    "README.md"
+  ]
+}

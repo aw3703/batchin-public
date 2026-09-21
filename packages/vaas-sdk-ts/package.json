@@ -2,7 +2,7 @@
   "name": "@batchin/vaas",
   "version": "0.1.0",
   "private": false,
-  "description": "BatchIn TypeScript integration client for authenticated developer workflows.",
+  "description": "BatchIn VaaS TypeScript SDK for cryptographic receipt and evidence verification APIs.",
   "license": "Apache-2.0",
   "type": "module",
   "homepage": "https://batchin.tech",
@@ -16,9 +16,12 @@
   },
   "keywords": [
     "batchin",
+    "vaas",
+    "verifiable-ai",
     "ai",
-    "integration",
-    "sdk"
+    "audit",
+    "merkle-proof",
+    "cryptographic-receipt"
   ],
   "exports": {
     ".": {
@@ -27,14 +30,19 @@
     }
   },
   "types": "./src/client.d.ts",
+  "bin": {
+    "vaas-verify": "./bin/vaas-verify.mjs",
+    "batchin-vaas": "./bin/vaas-verify.mjs"
+  },
   "files": [
     "src/client.js",
     "src/client.d.ts",
+    "bin/vaas-verify.mjs",
     "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && node -e \"const fs=require('node:fs');fs.copyFileSync('dist/client.js','src/client.js');fs.copyFileSync('dist/client.d.ts','src/client.d.ts');\"",
-    "prepack": "npm run build"
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

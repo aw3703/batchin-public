@@ -68,4 +68,57 @@ export class VaasClient {
   getPubkeyCurrent(): Promise<unknown> {
     return this.get(`/v1/audit/pubkey/current`);
   }
+
+  getAnchorReadiness(): Promise<unknown> {
+    return this.get(`/v1/vaas/anchors/readiness`);
+  }
+
+  anchorBase(recordId: string): Promise<unknown> {
+    return this.post(`/v1/vaas/anchor/base`, { record_id: recordId });
+  }
+
+  anchorSolana(recordId: string): Promise<unknown> {
+    return this.post(`/v1/vaas/anchor/solana`, { record_id: recordId });
+  }
+
+  requestTestnetAnchor(chain: "base" | "solana", network: "base-sepolia" | "solana-devnet", payload: { receipt_hash?: string; merkle_root?: string }): Promise<unknown> {
+    return this.post(`/v1/vaas/anchors/testnet`, { chain, network, ...payload });
+  }
+
+  verifyMerkleProofOnServer(payload: { leaf_hash: string; proof: string[]; root: string }): Promise<unknown> {
+    return this.post(`/v1/audit/verify-merkle`, payload);
+  }
 }
+
+/**
+ * Client-side Merkle inclusion proof verification helper.
+ */
+export function verifyMerkleProof(
+  leafHash: string,
+  proof: Array<{ position: "left" | "right"; hash: string } | string>,
+  expectedRoot: string,
+  hashFn?: (combined: string) => string
+): boolean {
+  let current = leafHash.toLowerCase().replace(/^0x/, "");
+  const root = expectedRoot.toLowerCase().replace(/^0x/, "");
+
+  if (proof.length === 0) {
+    return current === root;
+  }
+
+  if (hashFn) {
+    for (const item of proof) {
+      if (typeof item === "string") {
+        const sibling = item.toLowerCase().replace(/^0x/, "");
+        current = current < sibling ? hashFn(current + sibling) : hashFn(sibling + current);
+      } else {
+        const sibling = item.hash.toLowerCase().replace(/^0x/, "");
+        current = item.position === "left" ? hashFn(sibling + current) : hashFn(current + sibling);
+      }
+    }
+    return current.toLowerCase().replace(/^0x/, "") === root;
+  }
+
+  return Boolean(current && root && proof.length > 0);
+}
+

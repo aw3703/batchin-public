@@ -110,3 +110,30 @@ export declare class BatchIn {
 }
 export declare const BatchInClient: typeof BatchIn;
 export default BatchIn;
+/**
+ * Agent Resilience: JSON Auto-Healer
+ * Automatically recovers and completes truncated or slightly corrupted JSON tool calls.
+ */
+export declare class JsonAutoHealer {
+    static repair<T = any>(raw: string): T;
+}
+/**
+ * Agent Resilience: Hedged Dual-Dispatch
+ * Mitigates P95/P99 long tail latency pauses by dispatching a hedged backup request
+ * if the primary model does not respond within hedgeDelayMs.
+ */
+export declare class HedgedDualDispatch {
+    private readonly client;
+    private readonly hedgeDelayMs;
+    constructor(client: BatchIn, hedgeDelayMs?: number);
+    execute(options: {
+        primaryModel: string;
+        backupModel: string;
+        messages: ChatMessage[];
+        [key: string]: unknown;
+    }): Promise<ChatCompletion>;
+}
+/**
+ * OpenTelemetry (CNCF GenAI v1.28+) Semantic Conventions Helper
+ */
+export declare function formatGenAiSpanAttributes(model: string, usage?: ChatCompletionUsage, vaasReceiptId?: string): Record<string, string | number>;

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { BatchIn, BatchInError } from "../src/index.js";
+import { BatchIn, BatchInError, JsonAutoHealer, formatGenAiSpanAttributes } from "../src/index.js";
 
 test("BatchIn initialization with custom apiKey and baseUrl", () => {
   const client = new BatchIn({
@@ -75,3 +75,24 @@ test("BatchIn chat completion parses successful response", async () => {
   assert.equal(res.id, "chatcmpl-test");
   assert.equal(res.choices[0].message.content, "Hello from BatchIn!");
 });
+
+test("JsonAutoHealer recovers truncated and markdown-wrapped JSON", () => {
+  const truncated = '```json\n{"action": "lookup", "args": {"symbol": "BTC"';
+  const healed = JsonAutoHealer.repair(truncated);
+  assert.equal(healed.action, "lookup");
+  assert.equal(healed.args.symbol, "BTC");
+});
+
+test("formatGenAiSpanAttributes formats CNCF standard attributes", () => {
+  const attrs = formatGenAiSpanAttributes("deepseek-v4-pro", {
+    prompt_tokens: 15,
+    completion_tokens: 30,
+    total_tokens: 45,
+  }, "rec_12345");
+
+  assert.equal(attrs["gen_ai.system"], "batchin");
+  assert.equal(attrs["gen_ai.request.model"], "deepseek-v4-pro");
+  assert.equal(attrs["gen_ai.usage.prompt_tokens"], 15);
+  assert.equal(attrs["vaas.receipt_id"], "rec_12345");
+});
+

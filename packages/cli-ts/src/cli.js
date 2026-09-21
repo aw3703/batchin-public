@@ -28,6 +28,7 @@ function printHelp() {
 ${bold("COMMANDS:")}
   ${cyan("models")}                List all available AI models and active routes
   ${cyan("chat")} <prompt>        Run an interactive chat completion test
+  ${cyan("bench")} [model]        Benchmark latency (TTFT) and token throughput (TPS)
   ${cyan("verify")} <record-id>   Verify cryptographic VaaS receipt & Merkle proof
   ${cyan("trace")} <run-id>       Inspect multi-step autonomous agent trace and spend
   ${cyan("quote")} <model>        Estimate token pricing for a given model
@@ -148,6 +149,34 @@ async function cmdDoctor() {
         console.log(bold(red("\nDoctor found issues connecting to the API.")));
     }
 }
+async function cmdBench(targetModel, isJson) {
+    console.log(bold(cyan(`\nBenchmarking latency & throughput for ${targetModel}...`)));
+    const t0 = performance.now();
+    try {
+        const res = (await request("/chat/completions", {
+            method: "POST",
+            body: JSON.stringify({
+                model: targetModel,
+                messages: [{ role: "user", content: "State 1 sentence." }],
+                max_tokens: 32,
+            }),
+        }));
+        const durationMs = Math.round(performance.now() - t0);
+        const completionTokens = res.usage?.completion_tokens || 1;
+        const tps = Math.round((completionTokens / (durationMs / 1000)) * 10) / 10;
+        if (isJson) {
+            console.log(JSON.stringify({ model: targetModel, durationMs, completionTokens, tps }));
+            return;
+        }
+        console.log(`  • Model: ${bold(targetModel)}`);
+        console.log(`  • Response Time: ${green(`${durationMs} ms`)}`);
+        console.log(`  • Estimated Speed: ${green(`${tps} tokens/sec`)}`);
+        console.log(`  • Sample Completion: ${gray(res.choices?.[0]?.message?.content?.trim() || "OK")}\n`);
+    }
+    catch (err) {
+        console.log(red(`Benchmark failed: ${err instanceof Error ? err.message : String(err)}`));
+    }
+}
 async function main() {
     const args = process.argv.slice(2);
     const isJson = args.includes("--json");
@@ -165,6 +194,11 @@ async function main() {
     if (command === "chat") {
         const prompt = args.slice(1).filter((a) => !a.startsWith("-")).join(" ");
         await cmdChat(prompt, model, isJson);
+        return;
+    }
+    if (command === "bench") {
+        const targetModel = args[1] && !args[1].startsWith("-") ? args[1] : model;
+        await cmdBench(targetModel, isJson);
         return;
     }
     if (command === "verify") {

@@ -25,3 +25,32 @@ def test_error_hierarchy():
     rate_err = RateLimitError("Rate limited", 429)
     assert isinstance(rate_err, BatchInError)
     assert rate_err.status_code == 429
+
+
+def test_auto_healer():
+    from batchin import JsonAutoHealer
+
+    truncated = '```json\n{"tool": "database_query", "params": {"query": "SELECT 1"'
+    repaired = JsonAutoHealer.repair(truncated)
+    assert repaired["tool"] == "database_query"
+    assert repaired["params"]["query"] == "SELECT 1"
+
+
+def test_chat_batchin_adapter(monkeypatch):
+    from batchin import ChatBatchIn
+
+    def mock_request(self, method, path, json=None):
+        return {
+            "id": "chatcmpl-mock",
+            "model": "deepseek-v4-pro",
+            "choices": [{"message": {"content": "Adapter works!"}}],
+        }
+
+    from batchin.client import BatchIn
+    monkeypatch.setattr(BatchIn, "request", mock_request)
+
+    model = ChatBatchIn(model="deepseek-v4-pro", api_key="mock-key")
+    res = model.invoke("Say hello")
+    assert res.content == "Adapter works!"
+    assert res.response_metadata["model"] == "deepseek-v4-pro"
+

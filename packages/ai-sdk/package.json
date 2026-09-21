@@ -1,0 +1,49 @@
+{
+  "name": "@batchin/ai-sdk",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Official Vercel AI SDK 4.x Provider for BatchIn 2026 Golden Models and VaaS Verification.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://batchin.tech",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aw3703/batchin-public.git",
+    "directory": "packages/ai-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/aw3703/batchin-public/issues"
+  },
+  "keywords": [
+    "batchin",
+    "ai-sdk",
+    "vercel-ai-sdk",
+    "deepseek",
+    "qwen",
+    "glm",
+    "kimi",
+    "agent"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@batchin/sdk": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

@@ -253,3 +253,198 @@ export class BatchIn {
 // Backward-compatible alias
 export const BatchInClient = BatchIn;
 export default BatchIn;
+
+/**
+ * Agent Resilience: JSON Auto-Healer
+ * Automatically recovers and completes truncated or slightly corrupted JSON tool calls.
+ */
+export class JsonAutoHealer {
+  static repair<T = any>(raw: string): T {
+    if (!raw || typeof raw !== "string") {
+      throw new Error("Invalid JSON input for Auto-Healer");
+    }
+
+    let text = raw.trim();
+
+    // 1. Strip markdown fences if present
+    if (text.startsWith("```")) {
+      text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+    }
+
+    // Try direct parse first
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      // Continue to healing heuristics
+    }
+
+    // 2. Find start of JSON structure
+    const firstBrace = text.indexOf("{");
+    const firstBracket = text.indexOf("[");
+    let startIndex = -1;
+
+    if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
+      startIndex = firstBrace;
+    } else if (firstBracket !== -1) {
+      startIndex = firstBracket;
+    }
+
+    if (startIndex !== -1) {
+      text = text.slice(startIndex);
+    }
+
+    // 3. Remove trailing commas before quotes or EOF
+    text = text.replace(/,\s*([}\]])/g, "$1").replace(/,\s*$/g, "");
+
+    // 4. Balance open brackets and quotes
+    let inString = false;
+    let escape = false;
+    const stack: string[] = [];
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (escape) {
+        escape = false;
+        continue;
+      }
+      if (char === "\\") {
+        escape = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+      if (!inString) {
+        if (char === "{" || char === "[") {
+          stack.push(char);
+        } else if (char === "}" && stack[stack.length - 1] === "{") {
+          stack.pop();
+        } else if (char === "]" && stack[stack.length - 1] === "[") {
+          stack.pop();
+        }
+      }
+    }
+
+    if (inString) {
+      text += '"';
+    }
+
+    // Clean any trailing comma after closing string
+    text = text.replace(/,\s*$/, "");
+
+    while (stack.length > 0) {
+      const open = stack.pop();
+      if (open === "{") {
+        text += "}";
+      } else if (open === "[") {
+        text += "]";
+      }
+    }
+
+    return JSON.parse(text) as T;
+  }
+}
+
+/**
+ * Agent Resilience: Hedged Dual-Dispatch
+ * Mitigates P95/P99 long tail latency pauses by dispatching a hedged backup request
+ * if the primary model does not respond within hedgeDelayMs.
+ */
+export class HedgedDualDispatch {
+  constructor(
+    private readonly client: BatchIn,
+    private readonly hedgeDelayMs: number = 350
+  ) {}
+
+  async execute(options: {
+    primaryModel: string;
+    backupModel: string;
+    messages: ChatMessage[];
+    [key: string]: unknown;
+  }): Promise<ChatCompletion> {
+    const { primaryModel, backupModel, messages, ...rest } = options;
+
+    return new Promise<ChatCompletion>((resolve, reject) => {
+      let resolved = false;
+      let primaryFailed = false;
+      let backupFailed = false;
+      let primaryError: unknown;
+      let backupError: unknown;
+
+      const triggerPrimary = async () => {
+        try {
+          const res = (await this.client.chat.completions.create({
+            ...rest,
+            model: primaryModel,
+            messages,
+          })) as ChatCompletion;
+          if (!resolved) {
+            resolved = true;
+            resolve(res);
+          }
+        } catch (err) {
+          primaryFailed = true;
+          primaryError = err;
+          if (backupFailed && !resolved) {
+            resolved = true;
+            reject(new Error(`Both primary and backup models failed: ${primaryError}, ${backupError}`));
+          }
+        }
+      };
+
+      const triggerBackup = async () => {
+        try {
+          const res = (await this.client.chat.completions.create({
+            ...rest,
+            model: backupModel,
+            messages,
+          })) as ChatCompletion;
+          if (!resolved) {
+            resolved = true;
+            resolve(res);
+          }
+        } catch (err) {
+          backupFailed = true;
+          backupError = err;
+          if (primaryFailed && !resolved) {
+            resolved = true;
+            reject(new Error(`Both primary and backup models failed: ${primaryError}, ${backupError}`));
+          }
+        }
+      };
+
+      triggerPrimary();
+
+      setTimeout(() => {
+        if (!resolved && !primaryFailed) {
+          triggerBackup();
+        }
+      }, this.hedgeDelayMs);
+    });
+  }
+}
+
+/**
+ * OpenTelemetry (CNCF GenAI v1.28+) Semantic Conventions Helper
+ */
+export function formatGenAiSpanAttributes(
+  model: string,
+  usage?: ChatCompletionUsage,
+  vaasReceiptId?: string
+): Record<string, string | number> {
+  const attrs: Record<string, string | number> = {
+    "gen_ai.system": "batchin",
+    "gen_ai.request.model": model,
+  };
+  if (usage) {
+    attrs["gen_ai.usage.prompt_tokens"] = usage.prompt_tokens;
+    attrs["gen_ai.usage.completion_tokens"] = usage.completion_tokens;
+    attrs["gen_ai.usage.total_tokens"] = usage.total_tokens;
+  }
+  if (vaasReceiptId) {
+    attrs["vaas.receipt_id"] = vaasReceiptId;
+    attrs["vaas.verified"] = 1;
+  }
+  return attrs;
+}

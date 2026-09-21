@@ -41,3 +41,16 @@ export declare function verifyMerkleProof(leafHash: string, proof: Array<{
     position: "left" | "right";
     hash: string;
 } | string>, expectedRoot: string, hashFn?: (combined: string) => string): boolean;
+export declare const BatchInVaaSClient: typeof VaasClient;
+/**
+ * Lightweight Base L2 on-chain attestation reader (Viem v2 compatible structure)
+ */
+export declare function queryBaseL2Attestation(recordId: string, options?: {
+    contractAddress?: string;
+    rpcUrl?: string;
+    fetchImpl?: typeof fetch;
+}): Promise<{
+    recordId: string;
+    verified: boolean;
+    contract: string;
+}>;

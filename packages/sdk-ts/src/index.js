@@ -139,3 +139,176 @@ export class BatchIn {
 // Backward-compatible alias
 export const BatchInClient = BatchIn;
 export default BatchIn;
+/**
+ * Agent Resilience: JSON Auto-Healer
+ * Automatically recovers and completes truncated or slightly corrupted JSON tool calls.
+ */
+export class JsonAutoHealer {
+    static repair(raw) {
+        if (!raw || typeof raw !== "string") {
+            throw new Error("Invalid JSON input for Auto-Healer");
+        }
+        let text = raw.trim();
+        // 1. Strip markdown fences if present
+        if (text.startsWith("```")) {
+            text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+        }
+        // Try direct parse first
+        try {
+            return JSON.parse(text);
+        }
+        catch {
+            // Continue to healing heuristics
+        }
+        // 2. Find start of JSON structure
+        const firstBrace = text.indexOf("{");
+        const firstBracket = text.indexOf("[");
+        let startIndex = -1;
+        if (firstBrace !== -1 && (firstBracket === -1 || firstBrace < firstBracket)) {
+            startIndex = firstBrace;
+        }
+        else if (firstBracket !== -1) {
+            startIndex = firstBracket;
+        }
+        if (startIndex !== -1) {
+            text = text.slice(startIndex);
+        }
+        // 3. Remove trailing commas before quotes or EOF
+        text = text.replace(/,\s*([}\]])/g, "$1").replace(/,\s*$/g, "");
+        // 4. Balance open brackets and quotes
+        let inString = false;
+        let escape = false;
+        const stack = [];
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            if (escape) {
+                escape = false;
+                continue;
+            }
+            if (char === "\\") {
+                escape = true;
+                continue;
+            }
+            if (char === '"') {
+                inString = !inString;
+                continue;
+            }
+            if (!inString) {
+                if (char === "{" || char === "[") {
+                    stack.push(char);
+                }
+                else if (char === "}" && stack[stack.length - 1] === "{") {
+                    stack.pop();
+                }
+                else if (char === "]" && stack[stack.length - 1] === "[") {
+                    stack.pop();
+                }
+            }
+        }
+        if (inString) {
+            text += '"';
+        }
+        // Clean any trailing comma after closing string
+        text = text.replace(/,\s*$/, "");
+        while (stack.length > 0) {
+            const open = stack.pop();
+            if (open === "{") {
+                text += "}";
+            }
+            else if (open === "[") {
+                text += "]";
+            }
+        }
+        return JSON.parse(text);
+    }
+}
+/**
+ * Agent Resilience: Hedged Dual-Dispatch
+ * Mitigates P95/P99 long tail latency pauses by dispatching a hedged backup request
+ * if the primary model does not respond within hedgeDelayMs.
+ */
+export class HedgedDualDispatch {
+    client;
+    hedgeDelayMs;
+    constructor(client, hedgeDelayMs = 350) {
+        this.client = client;
+        this.hedgeDelayMs = hedgeDelayMs;
+    }
+    async execute(options) {
+        const { primaryModel, backupModel, messages, ...rest } = options;
+        return new Promise((resolve, reject) => {
+            let resolved = false;
+            let primaryFailed = false;
+            let backupFailed = false;
+            let primaryError;
+            let backupError;
+            const triggerPrimary = async () => {
+                try {
+                    const res = (await this.client.chat.completions.create({
+                        ...rest,
+                        model: primaryModel,
+                        messages,
+                    }));
+                    if (!resolved) {
+                        resolved = true;
+                        resolve(res);
+                    }
+                }
+                catch (err) {
+                    primaryFailed = true;
+                    primaryError = err;
+                    if (backupFailed && !resolved) {
+                        resolved = true;
+                        reject(new Error(`Both primary and backup models failed: ${primaryError}, ${backupError}`));
+                    }
+                }
+            };
+            const triggerBackup = async () => {
+                try {
+                    const res = (await this.client.chat.completions.create({
+                        ...rest,
+                        model: backupModel,
+                        messages,
+                    }));
+                    if (!resolved) {
+                        resolved = true;
+                        resolve(res);
+                    }
+                }
+                catch (err) {
+                    backupFailed = true;
+                    backupError = err;
+                    if (primaryFailed && !resolved) {
+                        resolved = true;
+                        reject(new Error(`Both primary and backup models failed: ${primaryError}, ${backupError}`));
+                    }
+                }
+            };
+            triggerPrimary();
+            setTimeout(() => {
+                if (!resolved && !primaryFailed) {
+                    triggerBackup();
+                }
+            }, this.hedgeDelayMs);
+        });
+    }
+}
+/**
+ * OpenTelemetry (CNCF GenAI v1.28+) Semantic Conventions Helper
+ */
+export function formatGenAiSpanAttributes(model, usage, vaasReceiptId) {
+    const attrs = {
+        "gen_ai.system": "batchin",
+        "gen_ai.request.model": model,
+    };
+    if (usage) {
+        attrs["gen_ai.usage.prompt_tokens"] = usage.prompt_tokens;
+        attrs["gen_ai.usage.completion_tokens"] = usage.completion_tokens;
+        attrs["gen_ai.usage.total_tokens"] = usage.total_tokens;
+    }
+    if (vaasReceiptId) {
+        attrs["vaas.receipt_id"] = vaasReceiptId;
+        attrs["vaas.verified"] = 1;
+    }
+    return attrs;
+}

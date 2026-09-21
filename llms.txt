@@ -1,0 +1,34 @@
+# BatchIn
+
+> The Verification-First AI Inference & Autonomous Agent Control Plane.
+
+BatchIn is an enterprise-grade AI inference routing and cryptographic verification platform. It provides OpenAI-compatible model endpoints, high-availability multi-provider fallback across 2026 domestic golden models, verifiable cryptographic audit receipts via VaaS (Verifiable AI as a Service), and native Model Context Protocol (MCP) agent tools.
+
+Strictly operated as an application-layer software routing and attestation control plane, BatchIn adheres to 100% Zero-Hardware compliance and complies with all US Export Administration Regulations (EAR) and OFAC sanction guidelines.
+
+## Core Highlights
+
+- **OpenAI-Compatible Drop-In**: Seamlessly works with any existing OpenAI client, LangChain, LlamaIndex, or Vercel AI SDK by switching `baseURL` and `apiKey`.
+- **2026 Golden Model Matrix**: Unified access to DeepSeek-V4 Pro/Flash, Qwen 3.8 Max, GLM-5.3, Kimi K3, and MiniMax M3 with zero downtime.
+- **VaaS Cryptographic Attestation**: Ed25519 digital signatures and SHA-256 Merkle inclusion proofs anchored on Base L2 blockchain and Solana.
+- **Agent Resilience Middleware**: Client-side JSON Auto-Healer for broken tool calls and Hedged Dual-Dispatch to eliminate P95 tail latency.
+- **Model Context Protocol (MCP)**: Native FastMCP/JSON-RPC server with 8 production tools for Claude Desktop, Cursor, and Windsurf.
+
+## Packages & Installation
+
+- `@batchin/sdk` (TypeScript): `npm install @batchin/sdk`
+- `@batchin/ai-sdk` (Vercel AI SDK Provider): `npm install @batchin/ai-sdk ai`
+- `batchin` (Python): `pip install batchin`
+- `@batchin/cli` (CLI Tools): `npm install -g @batchin/cli`
+- `batchin-mcp-server` (MCP Server): `pip install batchin-mcp-server`
+- `@batchin/vaas` (VaaS Verifier): `npm install @batchin/vaas`
+- `batchin-vaas` (Python VaaS Verifier): `pip install batchin-vaas`
+- `@batchin/contracts` (Smart Contracts): Base Sepolia smart contracts & ABI
+
+## Documentation & Deep Links
+
+- [Complete Documentation](docs/llms-full.txt): Full Markdown reference documentation.
+- [TypeScript Quickstart](examples/quickstart-ts): TypeScript quickstart demo.
+- [Python Quickstart](examples/quickstart-python): Python quickstart demo.
+- [MCP Agent Integration](examples/mcp-agent): Cursor, Claude Desktop, and Windsurf setup.
+- [API Reference](docs/llms-full.txt#api-reference): Endpoint specifications and parameters.

@@ -16,13 +16,18 @@ class VaasClient:
         transport: httpx.BaseTransport | None = None,
         timeout: float = 30.0,
     ) -> None:
+        self.base_url = base_url.rstrip("/")
+        self.api_key = api_key
         headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
         self._client = httpx.Client(
-            base_url=base_url.rstrip("/"),
+            base_url=self.base_url,
             headers=headers,
             timeout=timeout,
             transport=transport,
         )
+
+    def close(self) -> None:
+        self._client.close()
 
     def _get(self, path: str) -> dict[str, Any]:
         response = self._client.get(path)
@@ -57,3 +62,7 @@ class VaasClient:
 
     def get_pubkey_current(self) -> dict[str, Any]:
         return self._get("/v1/audit/pubkey/current")
+
+
+BatchInVaaSClient = VaasClient
+

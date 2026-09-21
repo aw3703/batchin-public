@@ -26,7 +26,7 @@ Once configured, restart Claude Desktop. The hammer icon will reveal 8 tools:
 - `chat_completion`
 - `batch_submit`
 - `usage_query`
-- `quote_estimate`
+- `quote`
 - `vaas_verify_receipt`
 - `vaas_get_receipt`
 - `batchin_query_pricing`

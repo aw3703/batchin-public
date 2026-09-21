@@ -42,7 +42,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && node -e \"const fs=require('node:fs');fs.copyFileSync('dist/client.js','src/client.js');fs.copyFileSync('dist/client.d.ts','src/client.d.ts');\"",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test test/*.test.mjs"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

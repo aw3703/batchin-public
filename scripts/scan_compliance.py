@@ -26,9 +26,17 @@ PROHIBITED_TERMS = [
     r"\bh800\b",
     r"\ba800\b",
     r"\bb200\b",
+    r"\bh20\b",
+    r"\bl40\b",
+    r"\brtx\b",
     r"\bnvidia\b",
+    r"\bgeforce\b",
+    r"\bcuda\b",
+    r"\btensorrt\b",
+    r"\bnvlink\b",
     r"\bsanctions\s+evasion\b",
     r"\bchip\s+smuggling\b",
+    r"\bentity\s+list\s+evasion\b",
 ]
 
 # Paths/files to ignore (like git directory, build output, lockfiles, or this script itself)

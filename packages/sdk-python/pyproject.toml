@@ -15,3 +15,7 @@ Homepage = "https://batchin.tech"
 Repository = "https://github.com/aw3703/batchin-public"
 Documentation = "https://batchin.tech/agents.md"
 Issues = "https://github.com/aw3703/batchin-public/issues"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+

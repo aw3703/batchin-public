@@ -42,7 +42,7 @@ contract BatchInVaaSRegistry is IERC8004 {
     struct ModelMetadata {
         string modelId;
         string vendor;
-        string hardwareSpec;
+        string computeSpec;
         bool teeSupported;
         uint256 maxContextLength;
         bool active;
@@ -108,7 +108,7 @@ contract BatchInVaaSRegistry is IERC8004 {
     event ModelRegistered(
         string indexed modelId,
         string vendor,
-        string hardwareSpec,
+        string computeSpec,
         bool teeSupported
     );
 
@@ -163,19 +163,20 @@ contract BatchInVaaSRegistry is IERC8004 {
     function registerModel(
         string calldata modelId,
         string calldata vendor,
-        string calldata hardwareSpec,
+        string calldata computeSpec,
         bool teeSupported,
         uint256 maxContextLength
-    ) external onlyOperator {
+    ) external onlyOwner {
         models[modelId] = ModelMetadata({
             modelId: modelId,
             vendor: vendor,
-            hardwareSpec: hardwareSpec,
+            computeSpec: computeSpec,
             teeSupported: teeSupported,
             maxContextLength: maxContextLength,
             active: true
         });
-        emit ModelRegistered(modelId, vendor, hardwareSpec, teeSupported);
+
+        emit ModelRegistered(modelId, vendor, computeSpec, teeSupported);
     }
 
     // --- Batch Anchoring ---

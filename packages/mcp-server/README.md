@@ -13,7 +13,7 @@ Exposes production-ready tools for OpenAI-compatible inference, batch dispatch, 
 | `chat_completion` | Inference | OpenAI-compatible chat completion via BatchIn high-availability routes |
 | `batch_submit` | Batch | Asynchronous batch job dispatch |
 | `usage_query` | Billing | Real-time workspace quota and usage querying |
-| `quote_estimate` | Pricing | Cost estimation for model inference requests |
+| `quote` | Pricing | Cost estimation for model inference requests |
 | `vaas_verify_receipt` | Security / VaaS | Cryptographically verify Ed25519 signatures and SHA-256 Merkle proofs for inference receipts |
 | `vaas_get_receipt` | Security / VaaS | Fetch verifiable evidence bundles, input/output hashes, and Merkle proofs by record ID |
 | `batchin_query_pricing` | Pricing | Query live token and multimodal pricing across all active models |

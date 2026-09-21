@@ -25,6 +25,7 @@
   "files": ["src", "README.md"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "test": "node --test test/*.test.mjs",
     "prepack": "npm run build"
   },
   "devDependencies": {

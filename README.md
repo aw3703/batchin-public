@@ -32,8 +32,14 @@
   <a href="README.md"><b>English</b></a> •
   <a href="README_CN.md"><b>简体中文</b></a> •
   <a href="https://batchin.tech"><b>Official Website</b></a> •
+  <a href="docs/rfcs"><b>Formal RFCs</b></a> •
   <a href="https://api.batchin.tech/openapi.json"><b>API Reference</b></a> •
   <a href="https://github.com/aw3703/batchin-public/discussions"><b>Community Discussions</b></a>
+</p>
+
+<p align="center">
+  <a href="https://colab.research.google.com/github/aw3703/batchin-public/blob/main/examples/notebooks/batchin_master_quickstart.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a>
+  <a href="docs/rfcs"><img src="https://img.shields.io/badge/Architecture-Formal%20RFCs%20(0001--0003)-informational?style=flat-square" alt="Formal RFCs" /></a>
 </p>
 
 </div>

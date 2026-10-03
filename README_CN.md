@@ -32,8 +32,14 @@
   <a href="README.md"><b>English</b></a> •
   <a href="README_CN.md"><b>简体中文</b></a> •
   <a href="https://batchin.tech"><b>官网平台</b></a> •
+  <a href="docs/rfcs"><b>架构 RFC 规范</b></a> •
   <a href="https://api.batchin.tech/openapi.json"><b>API 规范</b></a> •
   <a href="https://github.com/aw3703/batchin-public/discussions"><b>社区讨论区</b></a>
+</p>
+
+<p align="center">
+  <a href="https://colab.research.google.com/github/aw3703/batchin-public/blob/main/examples/notebooks/batchin_master_quickstart.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a>
+  <a href="docs/rfcs"><img src="https://img.shields.io/badge/底层协议规范-正式%20RFC%20标准%20(0001--0003)-informational?style=flat-square" alt="RFC 规范" /></a>
 </p>
 
 </div>

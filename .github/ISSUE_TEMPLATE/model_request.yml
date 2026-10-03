@@ -1,0 +1,53 @@
+name: Model or Provider Request
+description: Request a new LLM model or provider route for the BatchIn catalog
+labels: ["model-request", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping expand the BatchIn model matrix! Please provide details about the requested model or upstream provider.
+  - type: input
+    id: model_name
+    attributes:
+      label: Model Name / ID
+      description: The canonical name or identifier of the model (e.g. `deepseek-v4`, `qwen3.8-max`, `claude-4-sonnet`).
+      placeholder: "e.g., deepseek-v4-pro"
+    validations:
+      required: true
+  - type: input
+    id: organization
+    attributes:
+      label: Provider / Organization
+      description: Company, foundation, or organization developing the model.
+      placeholder: "e.g., DeepSeek / Alibaba / Anthropic / Meta"
+    validations:
+      required: true
+  - type: input
+    id: reference_url
+    attributes:
+      label: Official Reference / Hugging Face / Paper URL
+      description: Link to the model announcement, Hugging Face repository, or API documentation.
+      placeholder: "https://huggingface.co/..."
+    validations:
+      required: false
+  - type: dropdown
+    id: model_category
+    attributes:
+      label: Model Modality / Architecture
+      options:
+        - "LLM (Text / Reasoning / Coding)"
+        - "Vision-Language (Multimodal VLM)"
+        - "Video Generation"
+        - "Image Generation"
+        - "Embedding / Reranker"
+        - "Audio / Speech"
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case & Motivation
+      description: Why would this model benefit your agents or workflow?
+      placeholder: "High context benchmark, agentic tool use, cost efficiency..."
+    validations:
+      required: true

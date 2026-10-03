@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/aw3703/batchin-public/discussions
+    about: Ask questions, discuss architectures, share prompt templates, or propose RFCs.
+  - name: Official Documentation & Platform
+    url: https://batchin.tech
+    about: Learn more about BatchIn platform, API keys, and enterprise throughput.
+  - name: Security Vulnerability Reporting
+    url: https://github.com/aw3703/batchin-public/security/policy
+    about: Privately report security vulnerabilities.

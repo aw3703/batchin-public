@@ -1,10 +1,12 @@
 # @batchin/contracts
 
-Official smart contracts for **BatchIn VaaS (Verifiable AI as a Service)** on-chain registry, Merkle root anchoring, and enterprise settlement.
+Public Solidity interfaces for **BatchIn VaaS (Verifiable AI as a Service)** receipt registries and Merkle proof verification.
 
 ---
 
-## Deployed Contracts
+## Deployment status
+
+The addresses below are historical testnet references from the public package and are not a production availability claim. Verify the current network, bytecode, deployment owner, and API readiness before sending a transaction. The private control plane decides whether anchoring or settlement is enabled.
 
 | Network | Contract | Address | Explorer |
 | :--- | :--- | :--- | :--- |
@@ -24,7 +26,7 @@ Official smart contracts for **BatchIn VaaS (Verifiable AI as a Service)** on-ch
 - Proposed Ethereum standard interface for verifiable AI inference attribution.
 
 ### 3. `BatchInEnterpriseTreasury.sol`
-- Automated corporate multi-currency escrow, gas sponsorship, and settlement contracts for enterprise autonomous agents.
+- Treasury and settlement interfaces are experimental and must not be treated as a live payment rail without verifier, entitlement, ledger, refund, and reconciliation evidence.
 
 ---
 

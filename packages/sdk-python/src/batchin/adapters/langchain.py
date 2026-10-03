@@ -1,6 +1,6 @@
 """
 BatchIn LangChain Adapter
-Enables 1-line integration with LangChain and LangGraph for 2026 Golden Models and VaaS attestation.
+Enables one-line integration with LangChain and LangGraph for BatchIn's authenticated API.
 """
 from __future__ import annotations
 

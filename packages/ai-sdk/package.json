@@ -2,7 +2,7 @@
   "name": "@batchin/ai-sdk",
   "version": "0.1.0",
   "private": false,
-  "description": "Official Vercel AI SDK 4.x Provider for BatchIn 2026 Golden Models and VaaS Verification.",
+  "description": "Vercel AI SDK provider adapter for BatchIn's authenticated inference API.",
   "license": "Apache-2.0",
   "type": "module",
   "homepage": "https://batchin.tech",

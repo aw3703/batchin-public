@@ -31,8 +31,10 @@ from batchin import BatchIn
 
 client = BatchIn(api_key="your-batchin-api-key")
 
+models = client.models.list()
+model_id = models["data"][0]["id"]
 response = client.chat.completions.create(
-    model="deepseek-v4-pro",
+    model=model_id,
     messages=[
         {"role": "system", "content": "You are a helpful coding assistant."},
         {"role": "user", "content": "Write a quicksort function in Python."},
@@ -47,7 +49,7 @@ print(response["choices"][0]["message"]["content"])
 
 ```python
 for chunk in client.chat.completions.create(
-    model="deepseek-v4-flash",
+    model=model_id,
     messages=[{"role": "user", "content": "Explain Merkle trees in two sentences."}],
     stream=True,
 ):
@@ -65,7 +67,7 @@ from batchin import AsyncBatchIn
 async def main():
     async with AsyncBatchIn(api_key="your-batchin-api-key") as client:
         response = await client.chat.completions.create(
-            model="qwen3.8-max",
+            model=model_id,
             messages=[{"role": "user", "content": "Hello from async python!"}],
         )
         print(response)

@@ -1,6 +1,6 @@
 """
 Agent Resilience: Hedged Dual-Dispatch
-Eliminates long-tail P95/P99 latency pauses by triggering a hedged request to a fallback golden model.
+Provides an opt-in client-side backup request policy. It does not guarantee a latency improvement and should be used only when duplicate upstream work is acceptable.
 """
 from __future__ import annotations
 

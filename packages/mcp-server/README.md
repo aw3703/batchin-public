@@ -2,7 +2,7 @@
 
 The official Model Context Protocol (MCP) server for the **BatchIn AI Inference Control Plane**.
 
-Exposes production-ready tools for OpenAI-compatible inference, batch dispatch, cryptographic VaaS receipt verification, real-time pricing queries, and multi-agent trace correlation to Cursor, Windsurf, Claude Desktop, and autonomous agents.
+Exposes authenticated tools for OpenAI-compatible inference, batch dispatch, cryptographic VaaS receipt verification, pricing queries, and agent trace correlation to Cursor, Windsurf, Claude Desktop, and other MCP clients. Each tool forwards the hosted API's readiness and error states.
 
 ---
 
@@ -19,6 +19,8 @@ Exposes production-ready tools for OpenAI-compatible inference, batch dispatch, 
 | `batchin_query_pricing` | Pricing | Query live token and multimodal pricing across all active models |
 | `batchin_agent_trace_run` | Observability | Trace and correlate multi-step agent runs, tool calls, and cumulative VaaS spend |
 | `batchin_model_fallback` | Routing | Query intelligent fallback hierarchies across high, mid, and low reasoning tiers |
+
+Tool names describe API contracts, not guaranteed production availability. Model, pricing, batch, VaaS, and payment access is account-gated and comes from the live API response.
 
 ---
 
@@ -45,6 +47,8 @@ python3 -m batchin_mcp.server
 ### Environment Variables
 - `BATCHIN_API_KEY`: Required. Your authenticated BatchIn API key.
 - `BATCHIN_API_BASE_URL`: Optional. Defaults to `https://api.batchin.tech`.
+
+Keep the key in the MCP process environment. Never commit it to a client configuration, repository, issue, or log.
 
 ### Claude Desktop Integration
 Add the following to your `claude_desktop_config.json`:

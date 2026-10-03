@@ -3,7 +3,6 @@
  * BatchIn Developer CLI
  * Official command-line interface for BatchIn AI Inference Control Plane.
  */
-import { createHash } from "node:crypto";
 import process from "node:process";
 const baseUrl = (process.env.BATCHIN_API_BASE_URL ?? "https://api.batchin.tech/v1").replace(/\/$/, "");
 const apiKey = process.env.BATCHIN_API_KEY;
@@ -26,9 +25,9 @@ function printHelp() {
   batchin <command> [arguments] [options]
 
 ${bold("COMMANDS:")}
-  ${cyan("models")}                List all available AI models and active routes
+  ${cyan("models")}                List models returned for the current API key
   ${cyan("chat")} <prompt>        Run an interactive chat completion test
-  ${cyan("bench")} [model]        Benchmark latency (TTFT) and token throughput (TPS)
+  ${cyan("bench")} [model]        Measure one live request (not an SLA)
   ${cyan("verify")} <record-id>   Verify cryptographic VaaS receipt & Merkle proof
   ${cyan("trace")} <run-id>       Inspect multi-step autonomous agent trace and spend
   ${cyan("quote")} <model>        Estimate token pricing for a given model
@@ -36,7 +35,7 @@ ${bold("COMMANDS:")}
   ${cyan("help")}                 Show this help manual
 
 ${bold("OPTIONS:")}
-  --model <name>          Specify model (default: deepseek-v4-flash)
+  --model <name>          Specify a model returned by the catalog
   --json                  Output raw JSON instead of formatted text
   --endpoint <url>        Override default API base URL
 `);
@@ -70,16 +69,19 @@ async function cmdModels(isJson) {
         console.log(JSON.stringify(res, null, 2));
         return;
     }
-    console.log(bold(green("✔ Available Active Models:")));
+    console.log(bold(green("Models returned for this API key:")));
     const models = res.data ?? [];
     for (const m of models) {
         console.log(`  • ${bold(cyan(m.id.padEnd(28)))} ${gray(m.owned_by ?? "batchin")}`);
     }
-    console.log(gray(`\nTotal models available: ${models.length}`));
+    console.log(gray(`\nTotal catalog rows: ${models.length}`));
 }
 async function cmdChat(prompt, model, isJson) {
     if (!prompt) {
         throw new Error("usage: batchin chat \"Your prompt here\" [--model <model>]");
+    }
+    if (!model) {
+        throw new Error("Choose --model from the authenticated `batchin models` catalog.");
     }
     console.log(gray(`Querying ${model}...`));
     const startTime = Date.now();
@@ -104,34 +106,25 @@ async function cmdVerify(recordId, isJson) {
     if (!recordId) {
         throw new Error("usage: batchin verify <record-id>");
     }
-    const startTime = Date.now();
-    const leafHash = "0x" + createHash("sha256").update(recordId + "_payload").digest("hex");
-    const merkleRoot = "0x" + createHash("sha256").update(leafHash + "_root").digest("hex");
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(3);
+    const result = await request(`/audit/${encodeURIComponent(recordId)}/verify`);
     if (isJson) {
-        console.log(JSON.stringify({
-            record_id: recordId,
-            status: "verified",
-            cryptographic_checks: {
-                ed25519_signature: "valid",
-                leaf_hash: leafHash,
-                merkle_root: merkleRoot,
-            },
-            verification_time_sec: elapsed,
-        }, null, 2));
+        console.log(JSON.stringify(result, null, 2));
         return;
     }
+    const checks = (result.checks ?? [])
+        .map((check) => `${check.name ?? "check"}: ${check.valid ? "valid" : "invalid"}`)
+        .join(", ");
+    const valid = result.valid === true;
     console.log(`
-${bold(green("✔ VaaS Cryptographic Receipt Verified"))}
+${bold(valid ? green("VaaS Cryptographic Receipt Verified") : red("VaaS Cryptographic Receipt Verification Failed"))}
 ${gray("--------------------------------------------------------------------------------")}
   ${bold("Record ID:")}         ${recordId}
-  ${bold("Signature:")}         ${green("Valid Ed25519 (RFC 8032)")}
-  ${bold("Leaf Hash:")}         ${yellow(leafHash)}
-  ${bold("Merkle Root:")}       ${cyan(merkleRoot)}
-  ${bold("Settlement Anchor:")} Base L2 Rollup (0x742d35Cc6634C0532925a3b844Bc454e4438f44e)
-  ${bold("Privacy:")}           Zero Data Retention (ZDR Verified)
+  ${bold("Status:")}            ${valid ? green("verified") : red("failed")}
+  ${bold("Checks:")}            ${checks || "none returned"}
 ${gray("--------------------------------------------------------------------------------")}
 `);
+    if (!valid)
+        process.exitCode = 1;
 }
 async function cmdDoctor() {
     console.log(bold("Running BatchIn Doctor Diagnostics..."));
@@ -142,7 +135,7 @@ async function cmdDoctor() {
         await request("/models");
         const pingMs = Date.now() - start;
         console.log(`  • Network Ping: ${green(`${pingMs}ms (HTTP 200 OK)`)}`);
-        console.log(bold(green("\nAll system diagnostics passed!")));
+        console.log(bold(green("\nAPI connectivity check passed. Model and payment readiness were not tested.")));
     }
     catch (err) {
         console.log(`  • Network Ping: ${red("Failed: " + (err instanceof Error ? err.message : String(err)))}`);
@@ -150,6 +143,9 @@ async function cmdDoctor() {
     }
 }
 async function cmdBench(targetModel, isJson) {
+    if (!targetModel) {
+        throw new Error("Choose a model from the authenticated `batchin models` catalog.");
+    }
     console.log(bold(cyan(`\nBenchmarking latency & throughput for ${targetModel}...`)));
     const t0 = performance.now();
     try {
@@ -181,7 +177,7 @@ async function main() {
     const args = process.argv.slice(2);
     const isJson = args.includes("--json");
     const modelIdx = args.indexOf("--model");
-    const model = modelIdx !== -1 && args[modelIdx + 1] ? args[modelIdx + 1] : "deepseek-v4-flash";
+    const model = modelIdx !== -1 && args[modelIdx + 1] ? args[modelIdx + 1] : "";
     const command = args[0] ?? "help";
     if (command === "help" || args.includes("-h") || args.includes("--help")) {
         printHelp();

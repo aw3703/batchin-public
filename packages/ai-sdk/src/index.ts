@@ -1,6 +1,6 @@
 /**
  * @batchin/ai-sdk
- * Official Vercel AI SDK Provider for BatchIn 2026 Golden Models and VaaS Verification.
+ * Vercel AI SDK provider adapter for BatchIn's authenticated inference API.
  */
 
 export type BatchInModelId =

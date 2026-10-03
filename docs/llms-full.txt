@@ -1,169 +1,74 @@
-# BatchIn Complete Technical Specification & Developer Reference
+# BatchIn Developer Reference
 
-## 1. System Overview & Architecture
+## Scope
 
-BatchIn is an enterprise-grade AI inference routing and cryptographic verification platform. It operates as an application-level intelligent control plane between autonomous AI agents, enterprise applications, and underlying model providers.
+BatchIn Public is the client layer for an evidence-based inference control plane. It contains SDKs, a CLI, an MCP connector, and VaaS verification clients. Provider credentials, customer data, billing ledgers, and hosted route policy stay in the private control plane.
 
-### Core Architecture Pillars:
-1. **Intelligent Model Routing**: OpenAI-compatible REST API (`https://api.batchin.tech/v1`) with zero-downtime multi-provider fallback.
-2. **2026 Golden Model Matrix**: Pure software access to 2026 domestic foundation models:
-   - `deepseek-v4-pro`: 1.8T parameter flagship MoE reasoning and programming model.
-   - `deepseek-v4-flash`: Ultra-low latency inference engine (P95 TTFT < 120ms).
-   - `qwen3.8-max`: 2.4T parameter multi-modal model with 1M native context.
-   - `glm-5.3`: High-throughput agentic tool-use and scientific reasoning engine.
-   - `kimi-k3`: Long-context recursive reasoning model.
-   - `minimax-m3`: Linear attention model with long-horizon coherence.
-3. **VaaS (Verifiable AI as a Service)**: Cryptographic auditability via:
-   - Ed25519 digital signatures (RFC 8032) signing response hash and timestamp.
-   - SHA-256 Merkle tree inclusion proofs anchoring batches to Base Sepolia smart contract (`0x742d35Cc6634C0532925a3b844Bc454e4438f44e`).
-4. **Agent Resilience Middleware**:
-   - `JsonAutoHealer`: Client-side parsing and repair of broken or truncated JSON responses in agent tool execution.
-   - `HedgedDualDispatch`: Latency-hedged dual request dispatch to eliminate P95/P99 long tail pauses in agent loops.
-5. **Zero-Hardware & Export Compliance**:
-   - 100% cloud software API routing only.
-   - Zero physical compute hardware leasing or resale.
-   - Full compliance with US Export Administration Regulations (EAR) and OFAC guidelines.
+## Discover before calling
 
----
+Use the authenticated catalog before selecting a model:
 
-## 2. TypeScript Ecosystem
-
-### 2.1 `@batchin/sdk`
-Installation:
 ```bash
-npm install @batchin/sdk
+curl https://api.batchin.tech/v1/models \
+  -H "Authorization: Bearer $BATCHIN_API_KEY"
 ```
 
-Usage:
-```typescript
-import { BatchIn, JsonAutoHealer, HedgedDualDispatch } from "@batchin/sdk";
+Only use models whose catalog state reports verified provider smoke, pricing, usage, billing, and account entitlement. Availability can change without a client release. The public repository does not publish a frozen model matrix or prices.
 
-const client = new BatchIn({
-  apiKey: process.env.BATCHIN_API_KEY,
-});
+## OpenAI-compatible requests
 
-// Standard completion
-const response = await client.chat.completions.create({
-  model: "deepseek-v4-pro",
-  messages: [{ role: "user", content: "Explain Merkle proofs in one sentence." }],
-});
-console.log(response.choices[0].message.content);
+For supported routes, set the client base URL to `https://api.batchin.tech/v1` and use a model ID returned by the catalog. Compatibility is route- and model-specific. Unsupported parameters, unavailable models, insufficient balance, and provider failures are returned as structured errors.
 
-// JSON Auto-Healer for agent tool calling
-const rawBrokenJson = '{"tool": "weather", "params": {"city": "San Francisco"'; // truncated
-const healed = JsonAutoHealer.repair(rawBrokenJson);
-console.log(healed); // { tool: "weather", params: { city: "San Francisco" } }
-```
-
-### 2.2 `@batchin/ai-sdk` (Vercel AI SDK Provider)
-Installation:
-```bash
-npm install @batchin/ai-sdk ai
-```
-
-Usage:
-```typescript
-import { batchin } from "@batchin/ai-sdk";
-import { streamText } from "ai";
-
-const result = await streamText({
-  model: batchin("deepseek-v4-pro"),
-  prompt: "Synthesize the advantages of cryptographic audit receipts in AI agents.",
-});
-
-for await (const chunk of result.textStream) {
-  process.stdout.write(chunk);
-}
-```
-
----
-
-## 3. Python Ecosystem
-
-### 3.1 `batchin`
-Installation:
-```bash
-pip install batchin
-```
-
-Synchronous Client:
 ```python
 from batchin import BatchIn
 
-client = BatchIn(api_key="your-key")
-resp = client.chat.completions.create(
-    model="qwen3.8-max",
+client = BatchIn(api_key="your_batchin_api_key")
+models = client.models.list()
+model_id = models["data"][0]["id"]
+result = client.chat.completions.create(
+    model=model_id,
     messages=[{"role": "user", "content": "Hello BatchIn"}],
 )
-print(resp["choices"][0]["message"]["content"])
+print(result)
 ```
 
-Asynchronous Client & Hedged Dual-Dispatch:
-```python
-import asyncio
-from batchin import AsyncBatchIn, HedgedDualDispatch
+Multimodal and asynchronous media routes have separate contracts and require an enabled route, output asset, usage record, cost record, and billing record.
 
-async def main():
-    client = AsyncBatchIn(api_key="your-key")
-    dispatcher = HedgedDualDispatch(client, hedge_delay_ms=350)
-    
-    response = await dispatcher.execute(
-        primary_model="deepseek-v4-pro",
-        backup_model="qwen3.8-max",
-        messages=[{"role": "user", "content": "Generate a concise executive summary."}],
-    )
-    print(response["choices"][0]["message"]["content"])
+## Package map
 
-asyncio.run(main())
-```
+| Package | Purpose |
+| --- | --- |
+| `@batchin/sdk` | TypeScript API client, streaming, model discovery, and usage metadata |
+| `@batchin/ai-sdk` | Vercel AI SDK provider adapter |
+| `batchin` | Python API client and adapters |
+| `@batchin/cli` | Authenticated API checks and model discovery |
+| `batchin-mcp-server` | MCP catalog, inference, pricing, trace, and receipt tools |
+| `@batchin/vaas` | TypeScript receipt and evidence verification client |
+| `batchin-vaas` | Python receipt verification client |
+| `@batchin/contracts` | Public VaaS Solidity interfaces; deployment is environment-gated |
 
-### 3.2 LangChain Adapter
-```python
-from batchin.adapters.langchain import ChatBatchIn
+## VaaS and payments
 
-chat = ChatBatchIn(model="deepseek-v4-pro", api_key="your-key")
-res = chat.invoke("What is the difference between synchronous and asynchronous consensus?")
-print(res.content)
-```
+VaaS verification accepts a real receipt bundle and checks its evidence. Test fixtures are useful for client tests but must be labeled as fixtures. Chain anchoring, x402, USDC, Stripe checkout, refunds, and settlement are readiness-gated; inspect API readiness and ledger records before using those paths in a product.
 
----
-
-## 4. Model Context Protocol (MCP) Server
-
-Package: `batchin-mcp-server`
-Run standalone:
 ```bash
-uvx batchin-mcp-server
+npx @batchin/vaas verify <receipt-file-or-record-id> \
+  --endpoint https://api.batchin.tech
 ```
 
-Tools Exposed:
-1. `models_list`: List available 2026 golden models and availability status.
-2. `smart_route`: Route prompt to best-performing model based on latency or cost constraints.
-3. `chat_generate`: Generate text completions with automatic fallback.
-4. `vaas_verify`: Cryptographically verify a VaaS receipt.
-5. `vaas_inspect`: Parse receipt payload headers and signatures.
-6. `quote`: Estimate token pricing for a given model.
-7. `agent_trace`: Trace multi-step agent tool execution and log metrics.
-8. `audit_log`: Export cryptographic audit trail logs for compliance.
+## MCP
 
----
+Install the connector with `pip install batchin-mcp-server`. The server exposes only the tools registered by the installed package and forwards API errors. Configure the API key through the MCP process environment; never commit it to a client configuration or issue.
 
-## 5. VaaS (Verifiable AI as a Service)
+## Local checks
 
-VaaS produces deterministic cryptographic receipts for every inference execution.
-Receipt Structure:
-- `receipt_id`: Unique identifier (UUIDv4)
-- `request_hash`: SHA-256 of canonical input payload
-- `response_hash`: SHA-256 of canonical output completion
-- `merkle_root`: Root hash of the 1,000-transaction rollup batch
-- `merkle_proof`: Sibling proof hashes verifying inclusion
-- `signature`: Ed25519 signature from BatchIn attestation authority
-- `chain_anchor`: Base Sepolia contract address and transaction ID
-
-Verification with `@batchin/vaas`:
-```typescript
-import { verifyMerkleProof, verifyReceipt } from "@batchin/vaas";
-
-const isValid = verifyReceipt(receiptBundle);
-console.log(`Receipt authenticity: ${isValid}`);
+```bash
+npm ci
+npm run typecheck
+npm run build
+npm run test:ts
+npm run test:py
+npm run compliance
 ```
+
+These checks validate client packages and policy scans. They do not perform provider, payment, or chain smoke against production.

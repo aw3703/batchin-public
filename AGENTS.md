@@ -1,6 +1,6 @@
 # BatchIn Agent Integration Manual
 
-BatchIn is an OpenAI-compatible, verification-first AI inference control plane and developer platform.
+BatchIn is a verification-first developer platform. This repository contains public clients; the hosted control plane decides which models, routes, prices, and payment paths are currently enabled.
 
 ---
 
@@ -18,12 +18,9 @@ Before requesting account-gated services, autonomous agents should inspect the f
 
 ---
 
-## Golden Model Matrix (2026-06+)
+## Model availability
 
-BatchIn routes production inference across domestic golden models:
-- **Ultra-Reasoning / Code**: `deepseek-v4-pro`, `qwen3.8-max`, `kimi-k3`, `glm-5.3`
-- **Fast / Cost-Effective**: `deepseek-v4-flash`, `deepseek-v4.1-flash`, `glm-5.3-flash`, `minimax-m3`
-- **Specialized Code**: `kimi-k2.7-code`
+Do not embed a model matrix in an agent prompt or client release. Read the authenticated catalog at `https://api.batchin.tech/v1/models` and use only models whose response reports verified provider smoke, pricing, usage, and billing evidence for the current account. A model name, SDK fixture, or HTTP 200 response is not availability evidence.
 
 ---
 
@@ -33,3 +30,4 @@ BatchIn routes production inference across domestic golden models:
 2. **Dedicated Capacity**: All compute resources are allocated as `Dedicated Capacity` or `Reserved Throughput` (TPS).
 3. **No Synthetic Ledger Records**: Never generate synthetic VaaS receipts or fabricated cryptographic signatures as valid data.
 4. **VaaS Verification**: Use `@batchin/vaas` or the `vaas_verify_receipt` MCP tool to confirm inference authenticity.
+5. **Payment and settlement**: x402, USDC, Stripe, and chain anchoring are readiness-gated. Check the API readiness and ledger records before describing them as enabled or settled.

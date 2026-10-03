@@ -25,8 +25,10 @@ const client = new BatchIn({
   apiKey: process.env.BATCHIN_API_KEY,
 });
 
+const models = await client.models.list();
+const modelId = models.data[0].id;
 const completion = await client.chat.completions.create({
-  model: "deepseek-v4-pro",
+  model: modelId,
   messages: [
     { role: "system", content: "You are an elite software architect." },
     { role: "user", content: "Explain how VaaS provides zero-trust AI auditability." },
@@ -41,7 +43,7 @@ console.log(completion.choices[0].message.content);
 
 ```typescript
 const stream = await client.chat.completions.create({
-  model: "deepseek-v4-flash",
+  model: modelId,
   messages: [{ role: "user", content: "Write a haiku about cryptography." }],
   stream: true,
 });
@@ -56,7 +58,7 @@ console.log();
 ### 3. Model Catalog & VaaS Evidence
 
 ```typescript
-// Query available models
+// Query models currently available to this API key
 const models = await client.models.list();
 console.log("Available models:", models.data.map(m => m.id));
 

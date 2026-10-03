@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to the BatchIn developer ecosystem!
 
-BatchIn is an OpenAI-compatible, verification-first AI inference control plane and developer platform. This repository hosts public SDKs, CLI tools, MCP servers, agent configurations, and cryptographic VaaS verification components.
+BatchIn is a verification-first developer platform. This repository hosts public SDKs, CLI tools, MCP servers, agent configurations, and cryptographic VaaS verification components. Hosted model and payment availability is owned by the private control plane and must never be inferred from a client fixture or a model name.
 
 ---
 
@@ -21,11 +21,11 @@ All contributors are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT
 - **uv**: >= 0.1.0 (recommended for Python package management)
 
 ### Initial Setup
-Clone the repository and install all workspace dependencies:
+Clone the repository and install the locked workspace dependencies:
 ```bash
 git clone https://github.com/aw3703/batchin-public.git
 cd batchin-public
-npm install
+npm ci
 ```
 
 ### Building Packages
@@ -53,6 +53,7 @@ python3 -m pip install -e .
 1. **Verification-First Focus**: BatchIn is focused on verifiable AI inference (VaaS), cryptographic receipt validation, and high-availability API routing.
 2. **Dedicated Capacity & Compliance**: All capacity is referenced via software terminology (`Dedicated Capacity`, `Reserved Throughput`, `Compute Nodes`). We do not reference physical compute hardware or engage in hardware reselling.
 3. **No Fake Cryptographic Data**: Never write code or tests that mock or forge production cryptographic signatures or VaaS receipts as valid unless explicitly marked as a mock test fixture.
+4. **Evidence boundary**: Keep provider smoke, pricing, billing, payment, and chain-anchoring claims tied to runtime evidence. Client tests may use fixtures, but documentation must label them as fixtures and must not call them production evidence.
 
 ---
 
@@ -64,8 +65,11 @@ python3 -m pip install -e .
    ```
 2. Ensure your changes compile and pass tests:
    ```bash
+   npm ci
    npm run build
    npm run typecheck
+   npm run test:ts
+   npm run test:py
    npm run compliance
    ```
 3. Commit with a concise conventional commit message:

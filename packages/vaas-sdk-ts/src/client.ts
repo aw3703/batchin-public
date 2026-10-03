@@ -119,7 +119,9 @@ export function verifyMerkleProof(
     return current.toLowerCase().replace(/^0x/, "") === root;
   }
 
-  return Boolean(current && root && proof.length > 0);
+  // A non-empty proof cannot be verified without the canonical hash function.
+  // Returning false avoids treating the presence of a proof as evidence.
+  return false;
 }
 
 export const BatchInVaaSClient = VaasClient;
@@ -165,4 +167,3 @@ export async function queryBaseL2Attestation(
     };
   }
 }
-

@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Security fixes and cryptographic updates are actively backported to the latest release branches:
+Security fixes and cryptographic updates are maintained on `main` and the latest tagged release:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -19,10 +19,13 @@ If you discover a security vulnerability or cryptographic flaw within BatchIn SD
    - Affected package or component and version
    - Proof of Concept (PoC) or reproduction steps
    - Potential impact (e.g., cryptographic bypass, replay attack, data leakage)
+   - Affected deployment or API route, if the issue depends on the hosted service
+
+Please redact API keys, provider credentials, payment secrets, private prompts, and personal data from reports and logs. A request ID or trace ID is useful for hosted-service reports.
 
 ## Responsible Disclosure
 
 We commit to:
-- Acknowledging receipt within 24 hours.
-- Providing a preliminary assessment and remediation timeline within 72 hours.
+- Acknowledging receipt within two business days.
+- Providing a preliminary assessment and remediation timeline as soon as the impact is confirmed.
 - Coordinated disclosure once fixes and mitigation patches have been released.

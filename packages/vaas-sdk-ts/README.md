@@ -2,7 +2,7 @@
 
 Official TypeScript SDK and standalone CLI verifier for **BatchIn VaaS (Verifiable AI as a Service)**.
 
-Provides cryptographic verification of AI inference receipts, input/output SHA-256 hashes, Ed25519 signature validation, Merkle inclusion proofs, and Base L2 settlement anchors.
+Provides client-side verification of AI inference receipt evidence, input/output SHA-256 hashes, Ed25519 signatures, and Merkle inclusion proofs. Anchor requests are readiness-gated by the hosted API.
 
 ---
 
@@ -41,14 +41,14 @@ const result = await vaas.verifyBundle({ receipt, evidence });
 console.log("Bundle verification status:", result);
 ```
 
-### 2. Base L2 & Solana Settlement Anchors
+### 2. Anchor readiness (gated)
 
 ```typescript
 // Query anchor readiness
 const readiness = await vaas.getAnchorReadiness();
 console.log("Anchor readiness:", readiness);
 
-// Request on-chain anchor on Base Sepolia
+// Request an anchor only when the readiness response permits it.
 const baseAnchor = await vaas.anchorBase(recordId);
 console.log("Base L2 anchor:", baseAnchor);
 ```

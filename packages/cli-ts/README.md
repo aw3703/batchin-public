@@ -29,7 +29,8 @@ batchin models
 ### 2. Interactive Terminal Chat Testing
 
 ```bash
-batchin chat "Explain optimistic rollups in one sentence" --model deepseek-v4-pro
+batchin models
+batchin chat "Explain optimistic rollups in one sentence" --model <model-id-from-catalog>
 ```
 
 ### 3. Cryptographic VaaS Receipt Verification
@@ -38,7 +39,7 @@ batchin chat "Explain optimistic rollups in one sentence" --model deepseek-v4-pr
 batchin verify rec_98bf12
 ```
 
-Outputs verified Ed25519 signature status, SHA-256 leaf hash, and Base L2 settlement anchor.
+Outputs the evidence returned by the API. A chain anchor is shown only when the hosted readiness and receipt responses confirm one; a local fixture or HTTP 200 is not proof of settlement.
 
 ### 4. Diagnostics & Connectivity Check
 

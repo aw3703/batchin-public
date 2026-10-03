@@ -13,6 +13,7 @@
     "test:ts": "npm run test --workspaces --if-present",
     "test:py": "pytest",
     "test": "npm run test:ts && npm run test:py",
+    "cli": "node packages/cli-ts/src/cli.js",
     "compliance": "python3 scripts/scan_compliance.py"
   },
   "devDependencies": {

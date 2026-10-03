@@ -244,18 +244,25 @@ Configure BatchIn in your favorite AI desktop GUI:
 
 ### Option F: Instant Developer CLI
 
+Run directly via local monorepo (instant, zero setup):
 ```bash
-# List available models
-npx @batchin/cli models
-
-# Run an interactive prompt check
-npx @batchin/cli chat "Explain zero data retention" --model deepseek-v4-flash
-
-# Benchmark TTFT & TPS across models
-npx @batchin/cli bench deepseek-v4-flash
+git clone https://github.com/aw3703/batchin-public.git
+cd batchin-public
 
 # Cryptographically verify a VaaS inference receipt
+npm run cli -- verify rec_98bf12
+
+# Benchmark TTFT & TPS across models
+npm run cli -- bench deepseek-v4-flash
+
+# List available models & pricing
+npm run cli -- models
+```
+
+Or execute via npx (registry package):
+```bash
 npx @batchin/cli verify rec_98bf12
+npx @batchin/cli bench deepseek-v4-flash
 ```
 
 ---

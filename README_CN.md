@@ -253,18 +253,25 @@ BatchIn 提供认证级 FastMCP 服务，向 Cursor、Windsurf、Claude Desktop 
 
 ### 方式六：开发者专属 CLI
 
+本地免安装即时运行（零依赖，克隆即跑）：
 ```bash
-# 查询当前可用模型列表与计费
-npx @batchin/cli models
+git clone https://github.com/aw3703/batchin-public.git
+cd batchin-public
 
-# 快速发起交互式测试
-npx @batchin/cli chat "解释零数据留存机制" --model deepseek-v4-flash
+# 密码学验证 VaaS 链上存证凭证
+npm run cli -- verify rec_98bf12
 
 # 实时测试 TTFT 与 TPS 吞吐表现
-npx @batchin/cli bench deepseek-v4-flash
+npm run cli -- bench deepseek-v4-flash
 
-# 验证 VaaS 链上存证凭证
+# 查询当前可用模型列表与计费
+npm run cli -- models
+```
+
+或通过 npx 运行：
+```bash
 npx @batchin/cli verify rec_98bf12
+npx @batchin/cli bench deepseek-v4-flash
 ```
 
 ---

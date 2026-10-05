@@ -17,7 +17,7 @@
     "compliance": "python3 scripts/scan_compliance.py"
   },
   "devDependencies": {
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.4",
     "typescript": "^5.8.3"
   },
   "engines": {

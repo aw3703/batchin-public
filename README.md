@@ -19,6 +19,8 @@ SDKs, a CLI, an MCP connector, and VaaS receipt verification for the BatchIn API
 
 [Website](https://batchin.tech) · [API reference](https://api.batchin.tech/openapi.json) · [Discussions](https://github.com/aw3703/batchin-public/discussions) · [Contributing](CONTRIBUTING.md) · [中文 README](README_CN.md)
 
+> Packages are released from signed version tags through the repository release workflow. Check the package registry before installing; hosted API availability remains account-scoped.
+
 </div>
 
 ---

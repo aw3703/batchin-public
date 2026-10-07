@@ -9,7 +9,10 @@ import process from "node:process";
 
 type Json = Record<string, unknown> | unknown[] | string | number | boolean | null;
 
-const baseUrl = (process.env.BATCHIN_API_BASE_URL ?? "https://api.batchin.tech/v1").replace(/\/$/, "");
+const cliArgs = process.argv.slice(2);
+const endpointIndex = cliArgs.indexOf("--endpoint");
+const configuredEndpoint = endpointIndex >= 0 ? cliArgs[endpointIndex + 1] : undefined;
+const baseUrl = (configuredEndpoint ?? process.env.BATCHIN_API_BASE_URL ?? "https://api.batchin.tech/v1").replace(/\/$/, "");
 const apiKey = process.env.BATCHIN_API_KEY;
 
 // ANSI Colors
@@ -162,6 +165,40 @@ async function cmdDoctor(): Promise<void> {
   }
 }
 
+async function cmdQuote(targetModel: string, isJson: boolean): Promise<void> {
+  if (!targetModel) {
+    throw new Error("usage: batchin quote <model> --input-tokens <n> --output-tokens <n>");
+  }
+  const inputIndex = cliArgs.indexOf("--input-tokens");
+  const outputIndex = cliArgs.indexOf("--output-tokens");
+  const estimatedInputTokens = Number(cliArgs[inputIndex + 1]);
+  const estimatedOutputTokens = Number(cliArgs[outputIndex + 1]);
+  if (!Number.isFinite(estimatedInputTokens) || !Number.isFinite(estimatedOutputTokens) || estimatedInputTokens < 0 || estimatedOutputTokens < 0) {
+    throw new Error("quote requires non-negative --input-tokens and --output-tokens values");
+  }
+  const result = await request("/quote", {
+    method: "POST",
+    body: JSON.stringify({ model: targetModel, estimated_input_tokens: estimatedInputTokens, estimated_output_tokens: estimatedOutputTokens }),
+  });
+  if (isJson) {
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+  console.log(JSON.stringify(result, null, 2));
+}
+
+async function cmdTrace(runId: string, isJson: boolean): Promise<void> {
+  if (!runId) {
+    throw new Error("usage: batchin trace <run-id>");
+  }
+  const result = await request(`/usage/logs?run_id=${encodeURIComponent(runId)}`);
+  if (isJson) {
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+  console.log(JSON.stringify(result, null, 2));
+}
+
 async function cmdBench(targetModel: string, isJson: boolean): Promise<void> {
   if (!targetModel) {
     throw new Error("Choose a model from the authenticated `batchin models` catalog.");
@@ -196,7 +233,7 @@ async function cmdBench(targetModel: string, isJson: boolean): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const args = process.argv.slice(2);
+  const args = cliArgs;
   const isJson = args.includes("--json");
   const modelIdx = args.indexOf("--model");
   const model = modelIdx !== -1 && args[modelIdx + 1] ? args[modelIdx + 1] : "";
@@ -233,6 +270,17 @@ async function main(): Promise<void> {
 
   if (command === "doctor") {
     await cmdDoctor();
+    return;
+  }
+
+  if (command === "quote") {
+    const targetModel = args[1] && !args[1].startsWith("-") ? args[1] : model;
+    await cmdQuote(targetModel, isJson);
+    return;
+  }
+
+  if (command === "trace") {
+    await cmdTrace(args[1], isJson);
     return;
   }
 

@@ -53,4 +53,5 @@ export declare function queryBaseL2Attestation(recordId: string, options?: {
     recordId: string;
     verified: boolean;
     contract: string;
+    verification: "receipt_not_checked" | "rpc_unavailable";
 }>;

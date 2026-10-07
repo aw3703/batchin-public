@@ -116,8 +116,12 @@ export async function queryBaseL2Attestation(recordId, options = {}) {
         const hasCode = Boolean(data.result && data.result !== "0x");
         return {
             recordId,
-            verified: hasCode,
+            // Bytecode presence proves only that the configured contract is deployed.
+            // It cannot prove that this receipt is included without the receipt hash,
+            // Merkle proof, root, and a contract call that verifies those values.
+            verified: false,
             contract,
+            verification: hasCode ? "receipt_not_checked" : "rpc_unavailable",
         };
     }
     catch {
@@ -125,6 +129,7 @@ export async function queryBaseL2Attestation(recordId, options = {}) {
             recordId,
             verified: false,
             contract,
+            verification: "rpc_unavailable",
         };
     }
 }

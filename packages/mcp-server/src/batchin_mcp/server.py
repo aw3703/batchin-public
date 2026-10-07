@@ -339,6 +339,8 @@ def _handle_tool_call(name: str, arguments: Mapping[str, Any]) -> dict[str, Any]
             return _tool_error(exc)
     if name == "batchin_query_pricing":
         try:
+            # Pricing metadata is account-scoped and is returned with the live
+            # catalog. Do not synthesize prices in the public connector.
             return _json_tool_result(_request_json("GET", "/v1/models"))
         except Exception as exc:
             return _tool_error(exc)
@@ -359,10 +361,12 @@ def _handle_tool_call(name: str, arguments: Mapping[str, Any]) -> dict[str, Any]
             }
             chain = fallbacks.get(reasoning_tier, fallbacks["mid"])
             available = [m.get("id") for m in models_data.get("data", [])] if isinstance(models_data, dict) else []
+            available_set = set(available)
             return _json_tool_result({
                 "tier": reasoning_tier,
-                "fallback_chain": chain,
+                "fallback_chain": [model for model in chain if model in available_set],
                 "available_models": available,
+                "selection": "catalog_intersection",
             })
         except Exception as exc:
             return _tool_error(exc)

@@ -22,7 +22,7 @@ Edit your `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-Once configured, restart Claude Desktop. The hammer icon will reveal 8 tools:
+Once configured, restart Claude Desktop. The hammer icon will reveal the tools enabled for the authenticated workspace:
 - `chat_completion`
 - `batch_submit`
 - `usage_query`

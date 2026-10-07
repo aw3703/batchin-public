@@ -53,6 +53,11 @@ const baseAnchor = await vaas.anchorBase(recordId);
 console.log("Base L2 anchor:", baseAnchor);
 ```
 
+`queryBaseL2Attestation(recordId)` only checks whether the configured registry
+contract is deployed. It deliberately returns `verified: false` until a receipt
+hash, Merkle proof, and registry verification call are supplied; contract bytecode
+presence alone is not evidence that a particular record is anchored.
+
 ### 3. Client-Side Merkle Inclusion Proof
 
 ```typescript

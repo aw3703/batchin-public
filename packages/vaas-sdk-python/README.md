@@ -52,3 +52,7 @@ Verify local evidence bundles offline:
 ```bash
 batchin-vaas-verify --receipt receipt.json --evidence evidence.json
 ```
+
+The local verifier checks the supplied receipt and evidence bundle. It does not
+infer on-chain settlement from a contract address or an HTTP success response;
+query the hosted readiness and receipt verification endpoints for that evidence.

@@ -136,7 +136,7 @@ export async function queryBaseL2Attestation(
     rpcUrl?: string;
     fetchImpl?: typeof fetch;
   } = {}
-): Promise<{ recordId: string; verified: boolean; contract: string }> {
+): Promise<{ recordId: string; verified: boolean; contract: string; verification: "receipt_not_checked" | "rpc_unavailable" }> {
   const contract = options.contractAddress || "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
   const rpcUrl = options.rpcUrl || "https://sepolia.base.org";
   const fetcher = options.fetchImpl || fetch;
@@ -156,14 +156,19 @@ export async function queryBaseL2Attestation(
     const hasCode = Boolean(data.result && data.result !== "0x");
     return {
       recordId,
-      verified: hasCode,
+      // Bytecode presence proves only that the configured contract is deployed.
+      // It cannot prove that this receipt is included without the receipt hash,
+      // Merkle proof, root, and a contract call that verifies those values.
+      verified: false,
       contract,
+      verification: hasCode ? "receipt_not_checked" : "rpc_unavailable",
     };
   } catch {
     return {
       recordId,
       verified: false,
       contract,
+      verification: "rpc_unavailable",
     };
   }
 }

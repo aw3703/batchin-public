@@ -34,7 +34,7 @@ def test_json_rpc_tools_list():
     resp = handle_request(req)
     assert resp["id"] == 1
     assert "tools" in resp["result"]
-    assert len(resp["result"]["tools"]) >= 8
+    assert len(resp["result"]["tools"]) >= 9
 
 
 def test_json_rpc_resources_read():

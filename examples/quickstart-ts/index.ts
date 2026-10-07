@@ -1,7 +1,10 @@
 import { BatchIn } from "@batchin/sdk";
 
 async function main() {
-  const apiKey = process.env.BATCHIN_API_KEY || "test-demo-key";
+  const apiKey = process.env.BATCHIN_API_KEY;
+  if (!apiKey) {
+    throw new Error("Set BATCHIN_API_KEY before running this example.");
+  }
   const client = new BatchIn({ apiKey });
 
   console.log("1. Fetching available models from BatchIn API...");
@@ -9,7 +12,8 @@ async function main() {
     const models = await client.models.list();
     console.log("Available models:", models.data?.slice(0, 5).map((m) => m.id));
   } catch (err) {
-    console.log("Offline mode or demo key used:", (err as Error).message);
+    console.error("Model discovery failed:", (err as Error).message);
+    throw err;
   }
 
   console.log("\n2. Sending chat completion request...");

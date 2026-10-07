@@ -51,3 +51,15 @@ test("verifyMerkleProof with string sibling (lexicographical ordering)", () => {
   );
   assert.equal(result, true);
 });
+
+test("queryBaseL2Attestation does not call contract presence receipt verification", async () => {
+  const { queryBaseL2Attestation } = await import("../src/client.js");
+  const result = await queryBaseL2Attestation("rec_test", {
+    contractAddress: "0x0000000000000000000000000000000000000001",
+    rpcUrl: "http://rpc.test",
+    fetchImpl: async () => new Response(JSON.stringify({ result: "0x6000" }), { status: 200 }),
+  });
+
+  assert.equal(result.verified, false);
+  assert.equal(result.verification, "receipt_not_checked");
+});

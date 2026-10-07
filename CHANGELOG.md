@@ -1,9 +1,15 @@
 # Changelog
 
-All notable changes to the public BatchIn developer resources are recorded here.
+All notable changes to the public BatchIn developer resources are documented here.
 
 ## Unreleased
 
-- Added CodeQL analysis, SBOM generation, and tag-triggered package release automation.
-- Added explicit ERC-8004 registration-v1 discovery guidance and trust-only semantics.
-- Kept hosted model, pricing, payment, and chain availability account-scoped and evidence-backed.
+- Make SDK, CLI, MCP, and VaaS examples reflect live catalog and evidence requirements.
+- Add CLI `quote` and `trace` commands and an explicit endpoint override.
+- Gate optional model fallback and keep unsupported models out of MCP discovery.
+- Keep VaaS verification truthful when a chain RPC cannot verify a receipt.
+
+## 1.0.0
+
+- Publish the TypeScript and Python SDKs, CLI, MCP server, VaaS verification clients, and public contracts.
+- Add CI, CodeQL, SBOM, Dependabot, compliance, and release workflows.

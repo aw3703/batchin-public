@@ -13,6 +13,6 @@
     "@batchin/vaas": "^0.1.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^7.0.2"
   }
 }
